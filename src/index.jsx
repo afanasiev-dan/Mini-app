@@ -14,6 +14,10 @@ import './mockEnv.js';
 // Configure all application dependencies.
 init(retrieveLaunchParams().startParam === 'debug' || import.meta.env.DEV);
 
+if (import.meta.env.DEV) {
+  import('./mockEnv.js');
+}
+
 ReactDOM.createRoot(document.getElementById('root')).render(
     <StrictMode>
         <Root/>

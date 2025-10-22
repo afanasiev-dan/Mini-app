@@ -1,18 +1,22 @@
+// src/components/App.jsx
 import { useLaunchParams, miniApp, useSignal } from '@telegram-apps/sdk-react';
 import { AppRoot } from '@telegram-apps/telegram-ui';
-import { Navigate, Route, Routes, HashRouter } from 'react-router-dom';
-
-import { routes } from '@/navigation/routes.jsx';
 
 export function App() {
-  const lp = useLaunchParams();
+  // Даже если не используешь — вызов нужен для инициализации
+  useLaunchParams();
   const isDark = useSignal(miniApp.isDark);
 
   return (
-    <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
-      <h1>✅ Работает!</h1>
-      <p>Mini App загружен.</p>
-    </div>
+    <AppRoot
+      appearance={isDark ? 'dark' : 'light'}
+      platform={['ios', 'macos'].includes(miniApp.platform) ? 'ios' : 'base'}
+    >
+      <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
+        <h1>✅ Работает!</h1>
+        <p>Mini App загружен.</p>
+      </div>
+    </AppRoot>
   );
 }
 
