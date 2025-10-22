@@ -9,16 +9,23 @@ export function App() {
   const isDark = useSignal(miniApp.isDark);
 
   return (
-    <AppRoot
-      appearance={isDark ? 'dark' : 'light'}
-      platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'}
-    >
-      <HashRouter>
-        <Routes>
-          {routes.map((route) => <Route key={route.path} {...route} />)}
-          <Route path="*" element={<Navigate to="/"/>}/>
-        </Routes>
-      </HashRouter>
-    </AppRoot>
+    <div style={{ padding: 20, fontFamily: 'sans-serif' }}>
+      <h1>✅ Работает!</h1>
+      <p>Mini App загружен.</p>
+    </div>
   );
 }
+
+
+
+    {/* <AppRoot */}
+    {/*   appearance={isDark ? 'dark' : 'light'} */}
+    {/*   platform={['macos', 'ios'].includes(lp.platform) ? 'ios' : 'base'} */}
+    {/* > */}
+    {/*   <HashRouter> */}
+    {/*     <Routes> */}
+    {/*       {routes.map((route) => <Route key={route.path} {...route} />)} */}
+    {/*       <Route path="*" element={<Navigate to="/"/>}/> */}
+    {/*     </Routes> */}
+    {/*   </HashRouter> */}
+    {/* </AppRoot> */}
