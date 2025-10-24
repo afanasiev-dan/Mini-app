@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" data-bs-theme="light">
+<html lang="ru" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,11 +122,20 @@
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Создание заявки на покупку</h5>
             <select class="form-select mb-3 bank-select">
+              <option selected>Выберите валюту</option>
+              <option value="1">USDT</option>
+              <option value="2">USDC</option>
+              <option value="3">BTC</option>
+              <option value="4">ETH</option>
+            </select>
+
+            <select class="form-select mb-3 bank-select">
               <option selected>Выберите банк</option>
               <option value="1">Т-Банк</option>
               <option value="2">Совкомбанк</option>
               <option value="3">ПСБ банк</option>
             </select>
+
             <div class="mb-3">
               <label class="form-label">Сумма</label>
               <input type="number" class="form-control sum-input" placeholder="0,252">
@@ -146,6 +155,15 @@
         <div class="card" style="max-width: 400px;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Создание заявки на продажу</h5>
+
+            <select class="form-select mb-3 bank-select">
+              <option selected>Выберите валюту</option>
+              <option value="1">USDT</option>
+              <option value="2">USDC</option>
+              <option value="3">BTC</option>
+              <option value="4">ETH</option>
+            </select>
+
             <select class="form-select mb-3 bank-select">
               <option selected>Выберите банк</option>
               <option value="1">Т-Банк</option>
@@ -156,10 +174,7 @@
               <label class="form-label">Сумма</label>
               <input type="number" class="form-control sum-input" placeholder="0,252">
             </div>
-            <!-- <div class="mb-3"> -->
-            <!--   <label class="form-label">Номер телефона или карты</label> -->
-            <!--   <input type="number" class="form-control contact-input" placeholder="89993331111"> -->
-            <!-- </div> -->
+
             <div class="mb-3">
               <label class="form-label">Номер телефона или карты</label>
               <input 
@@ -190,22 +205,16 @@
               <p><strong>ФИО:</strong> Василий Иванович Криптовалютов</p>
             </div>
 
-
-            <div class="">
-              <label class="form-label">Bybit UID</label>
-              <input type="number" class="form-control sum-input" placeholder="">
-            </div>
-            <button class="btn btn-primary w-100 mt-3 mb-3" onclick="submitForm('sell')">Сохранить</button>
-
             <select class="form-select mb-3 bank-select">
-              <option selected>Выберите сеть</option>
-              <option value="1">BSC (BEP20)</option>
-              <option value="2">Ethereum (ERC20)</option>
-              <option value="3">TRON (TRC20)</option>
-            </select>
+              <option selected>Выберите UID или сеть</option>
+              <option value="1">Bybit UID</option>
+              <option value="2">BSC (BEP20)</option>
+              <option value="3">Ethereum (ERC20)</option>
+              <option value="4">TRON (TRC20)</option>
+       </select>
 
             <div id="adress-wallet" class="mb-3">
-              <label class="form-label">Адрес кошелька</label>
+              <label class="form-label">Адрес</label>
               <input type="number" class="form-control sum-input" placeholder="">
             <button class="btn btn-primary w-100 mt-3 mb-3" onclick="submitForm('sell')">Сохранить</button>
 
