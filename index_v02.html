@@ -1,4 +1,4 @@
->
+<!DOCTYPE html>
 <html lang="ru" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8">
@@ -82,26 +82,6 @@
     .order-item.status-cancelled { border-left-color: #dc3545; }
     </style>
   </head>
-
-  <!-- Модальное окно ошибки -->
-  <div id="errorModal" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Ошибка</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <textarea id="errorText" class="form-control" rows="5" readonly></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="button" class="btn btn-primary" onclick="copyError()">Копировать</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <body>
 
     <div id="main">
@@ -222,8 +202,8 @@
             <h5 class="card-title text-center mb-4">Личный кабинет</h5>
 
             <div class="mb-4">
-              <p id="telegram-username"><strong>Telegram:</strong> Загрузка...</p>
-              <!-- <p><strong>ФИО:</strong> Василий Иванович Криптовалютов</p> -->
+              <p><strong>Telegram:</strong> <a href="http://t.me/crypto_vasya">@crypto_vasya</a></p>
+              <p><strong>ФИО:</strong> Василий Иванович Криптовалютов</p>
             </div>
 
             <select class="form-select mb-3 bank-select">
@@ -268,29 +248,10 @@
       <script>
       let currentScreen = 'selectionBlock';
 
-      let errorModalInstance = null;
-
-      function showError(message) {
-        const errorText = document.getElementById('errorText');
-        errorText.value = message;
-
-        if (!errorModalInstance) {
-          const modalEl = document.getElementById('errorModal');
-          errorModalInstance = new bootstrap.Modal(modalEl);
-        }
-        errorModalInstance.show();
-      }
-
-      function copyError() {
-        const errorText = document.getElementById('errorText');
-        errorText.select();
-        document.execCommand('copy');
-        alert('Текст ошибки скопирован!');
-      }
-
       function navigateTo(target) {
         const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock'];
 
+        // Анимация исчезновения текущего экрана
         const currentEl = document.getElementById(currentScreen);
         currentEl.classList.add('fade-out');
 
@@ -299,33 +260,17 @@
           currentEl.classList.remove('fade-out');
 
           if (target === 'back') {
+            // Возвращаемся к выбору
             document.getElementById('selectionBlock').classList.remove('hidden');
             currentScreen = 'selectionBlock';
           } else {
+            // Показываем целевой экран
+            const targetEl = document.getElementById(target + 'Form' || (target === 'profile' ? 'profileBlock' : null));
             const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
             document.getElementById(screenId).classList.remove('hidden');
             currentScreen = screenId;
-
-            // 👇 Обновляем данные профиля, если открываем его
-            if (target === 'profile') {
-              updateProfile();
-            }
           }
-        }, 400);
-      }
-
-      function updateProfile() {
-        const WebApp = window.Telegram?.WebApp;
-        const user = WebApp?.initDataUnsafe?.user;
-
-        if (user) {
-          const usernameEl = document.getElementById('telegram-username');
-          if (user.username) {
-            usernameEl.innerHTML = `<strong>Telegram:</strong> <a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
-          } else {
-            usernameEl.innerHTML = `<strong>Telegram:</strong> ID ${user.id}`;
-          }
-        }
+        }, 400); // Длительность анимации
       }
 
       async function submitForm(type) {
