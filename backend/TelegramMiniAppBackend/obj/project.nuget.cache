@@ -1,10 +1,9 @@
 {
   "version": 2,
-  "dgSpecHash": "vY4r9vbVs+Q=",
+  "dgSpecHash": "dgCRtYMsImk=",
   "success": true,
   "projectFilePath": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj",
   "expectedPackageFiles": [
-    "/home/daniil/.nuget/packages/microsoft.aspnetcore.openapi/9.0.4/microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.data.sqlite.core/9.0.10/microsoft.data.sqlite.core.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.entityframeworkcore/9.0.10/microsoft.entityframeworkcore.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.entityframeworkcore.abstractions/9.0.10/microsoft.entityframeworkcore.abstractions.9.0.10.nupkg.sha512",
@@ -24,14 +23,19 @@
     "/home/daniil/.nuget/packages/microsoft.extensions.options/9.0.10/microsoft.extensions.options.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.extensions.options.configurationextensions/8.0.0/microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.extensions.primitives/9.0.10/microsoft.extensions.primitives.9.0.10.nupkg.sha512",
-    "/home/daniil/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512",
     "/home/daniil/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.10/sqlitepclraw.bundle_e_sqlite3.2.1.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/sqlitepclraw.core/2.1.10/sqlitepclraw.core.2.1.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.10/sqlitepclraw.lib.e_sqlite3.2.1.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/sqlitepclraw.provider.e_sqlite3/2.1.10/sqlitepclraw.provider.e_sqlite3.2.1.10.nupkg.sha512",
+    "/home/daniil/.nuget/packages/system.diagnostics.diagnosticsource/9.0.10/system.diagnostics.diagnosticsource.9.0.10.nupkg.sha512",
+    "/home/daniil/.nuget/packages/system.io.pipelines/9.0.10/system.io.pipelines.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/system.memory/4.5.3/system.memory.4.5.3.nupkg.sha512",
+    "/home/daniil/.nuget/packages/system.text.encodings.web/9.0.10/system.text.encodings.web.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/system.text.json/9.0.10/system.text.json.9.0.10.nupkg.sha512",
-    "/home/daniil/.nuget/packages/telegram.bot/22.0.0/telegram.bot.22.0.0.nupkg.sha512"
+    "/home/daniil/.nuget/packages/telegram.bot/22.0.0/telegram.bot.22.0.0.nupkg.sha512",
+    "/home/daniil/.nuget/packages/microsoft.netcore.app.ref/8.0.15/microsoft.netcore.app.ref.8.0.15.nupkg.sha512",
+    "/home/daniil/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.15/microsoft.aspnetcore.app.ref.8.0.15.nupkg.sha512",
+    "/home/daniil/.nuget/packages/microsoft.netcore.app.host.linux-x64/8.0.15/microsoft.netcore.app.host.linux-x64.8.0.15.nupkg.sha512"
   ],
   "logs": [
     {
@@ -41,7 +45,7 @@
       "message": "TelegramMiniAppBackend зависит от Telegram.Bot (>= 20.0.0), но версия Telegram.Bot 20.0.0 не найдена. Использовалась версия Telegram.Bot 22.0.0.",
       "libraryId": "Telegram.Bot",
       "targetGraphs": [
-        "net9.0"
+        "net8.0"
       ]
     }
   ]

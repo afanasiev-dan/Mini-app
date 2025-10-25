@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TelegramMiniAppBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bb84e0887c1a0c042cb18aac3413ee5b2e887779")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bca21d238f2b46e77d4966e2e323f61dfeb4b5d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("TelegramMiniAppBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TelegramMiniAppBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

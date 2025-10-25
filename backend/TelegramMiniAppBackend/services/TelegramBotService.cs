@@ -12,7 +12,10 @@ public class TelegramBotService
     private readonly AppDbContext _dbContext;
     private readonly ILogger<TelegramBotService> _logger;
 
-    public TelegramBotService(TelegramBotClient botClient, AppDbContext dbContext, ILogger<TelegramBotService> logger)
+    public TelegramBotService(
+        TelegramBotClient botClient,
+        AppDbContext dbContext,
+        ILogger<TelegramBotService> logger)
     {
         _botClient = botClient;
         _dbContext = dbContext;
@@ -24,11 +27,11 @@ public class TelegramBotService
         var notificationChats = await _dbContext.NotificationChats.ToListAsync();
 
         var message = $@"🆕 <b>Новая заявка!</b>
-Тип: {(order.Type == "buy" ? "Покупка" : "Продажа")}
-Валюта: {order.Currency}
-Банк: {order.Bank}
-Сумма: {order.Amount}
-Контакт: {order.ContactInfo}";
+        Тип: {(order.Type == "buy" ? "Покупка" : "Продажа")}
+      Валюта: {order.Currency}
+              Банк: {order.Bank}
+                    Сумма: {order.Amount}
+                           Контакт: {order.ContactInfo}";
 
         foreach (var chat in notificationChats)
         {
@@ -39,7 +42,7 @@ public class TelegramBotService
                     text: message,
                     parseMode: ParseMode.Html,
                     cancellationToken: CancellationToken.None
-                );
+                    );
             }
             catch (Exception ex)
             {

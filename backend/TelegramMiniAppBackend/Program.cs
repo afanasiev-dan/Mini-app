@@ -30,6 +30,8 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
 }
 
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
 // --- Endpoints ---
 
 app.MapPost("/api/orders", async (
@@ -37,39 +39,49 @@ app.MapPost("/api/orders", async (
     TelegramBotService botService,
     HttpRequest request) =>
 {
-    using var reader = new StreamReader(request.Body);
-    var body = await reader.ReadToEndAsync();
-    var json = System.Text.Json.JsonDocument.Parse(body);
-    var root = json.RootElement;
-
-    if (!root.TryGetProperty("userId", out var userIdElem))
-        return Results.BadRequest("userId обязателен");
-
-    var userId = userIdElem.GetInt64();
-    var type = root.TryGetProperty("type", out var t) ? t.GetString() ?? "buy" : "buy";
-    var currency = root.TryGetProperty("currency", out var c) ? c.GetString() ?? "USDT" : "USDT";
-    var bank = root.TryGetProperty("bank", out var b) ? b.GetString() ?? "Т-Банк" : "Т-Банк";
-    var amount = root.TryGetProperty("amount", out var a) ? decimal.Parse(a.GetString() ?? "0") : 0;
-    var contactInfo = root.TryGetProperty("contactInfo", out var ci) ? ci.GetString() ?? "" : "";
-
-    var order = new Order
+    try
     {
-        UserId = userId,
-        Type = type,
-        Currency = currency,
-        Bank = bank,
-        Amount = amount,
-        ContactInfo = contactInfo,
-        Status = "active",
-        CreatedAt = DateTime.UtcNow
-    };
+        using var reader = new StreamReader(request.Body);
+        var body = await reader.ReadToEndAsync();
+        var json = System.Text.Json.JsonDocument.Parse(body);
+        var root = json.RootElement;
 
-    db.Orders.Add(order);
-    await db.SaveChangesAsync();
+        if (!root.TryGetProperty("userId", out var userIdElem))
+            return Results.BadRequest("userId обязателен");
 
-    await botService.NotifyNewOrder(order);
+        var userId = userIdElem.GetInt64();
+        var type = root.TryGetProperty("type", out var t) ? t.GetString() ?? "buy" : "buy";
+        var currency = root.TryGetProperty("currency", out var c) ? c.GetString() ?? "USDT" : "USDT";
+        var bank = root.TryGetProperty("bank", out var b) ? b.GetString() ?? "Т-Банк" : "Т-Банк";
+        var amount = root.TryGetProperty("amount", out var a) ? decimal.Parse(a.GetString() ?? "0") : 0;
+        var contactInfo = root.TryGetProperty("contactInfo", out var ci) ? ci.GetString() ?? "" : "";
 
-    return Results.Ok(new { id = order.Id });
+        var order = new Order
+        {
+            UserId = userId,
+            Type = type,
+            Currency = currency,
+            Bank = bank,
+            Amount = amount,
+            ContactInfo = contactInfo,
+            Status = "active",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        db.Orders.Add(order);
+        await db.SaveChangesAsync();
+
+        await botService.NotifyNewOrder(order);
+
+        logger.LogInformation("Ордер обработа и отправлен в телеграм");
+
+        return Results.Ok(new { id = order.Id });
+    }
+    catch (System.Exception ex)
+    {
+        logger.LogError($"Ошибка при обработке ордера: {ex.Message}");
+        throw;
+    }
 });
 
 app.MapGet("/api/orders/user/{userId}", async (AppDbContext db, long userId) =>
@@ -79,6 +91,8 @@ app.MapGet("/api/orders/user/{userId}", async (AppDbContext db, long userId) =>
         .OrderByDescending(o => o.CreatedAt)
         .Take(20)
         .ToListAsync();
+
+    logger.LogInformation("Ордера получены");
     return Results.Ok(orders);
 });
 
