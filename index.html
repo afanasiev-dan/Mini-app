@@ -1,4 +1,3 @@
->
 <html lang="ru" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8">
@@ -77,6 +76,9 @@
     padding-left: 12px;
     margin-bottom: 12px;
     }
+    .start-width-column {
+      width:400px;
+    }
     .order-item.status-active { border-left-color: #198754; }
     .order-item.status-completed { border-left-color: #0dcaf0; }
     .order-item.status-cancelled { border-left-color: #dc3545; }
@@ -138,7 +140,7 @@
       </div>
 
       <!-- Форма покупки -->
-      <div id="buyForm" class="screen hidden">
+      <div id="buyForm" class="screen hidden start-width-column">
         <div class="card" style="max-width: 400px;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Создание заявки на покупку</h5>
@@ -172,7 +174,7 @@
       </div>
 
       <!-- Форма продажи -->
-      <div id="sellForm" class="screen hidden">
+      <div id="sellForm" class="screen hidden start-width-column">
         <div class="card" style="max-width: 400px;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Создание заявки на продажу</h5>
@@ -216,7 +218,7 @@
       </div>
 
       <!-- Личный кабинет -->
-      <div id="profileBlock" class="screen hidden">
+      <div id="profileBlock" class="screen hidden start-width-column">
         <div class="card" style="max-width: 500px; width: 100%;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Личный кабинет</h5>
@@ -352,7 +354,7 @@
         };
 
         // 👇 ЗАМЕНИТЕ НА ВАШ NGROK-АДРЕС!
-        const BACKEND_URL = 'https://thurman-menadic-masonically.ngrok-free.dev';
+        const BACKEND_URL = 'https://p2p-hunters.ru';
 
         try {
           const response = await fetch(`${BACKEND_URL}/api/orders`, {
