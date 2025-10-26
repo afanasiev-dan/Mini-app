@@ -5,6 +5,7 @@ using TelegramMiniAppBackend.Models;
 using TelegramMiniAppBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors();
 
 // Токен бота — из переменной окружения или appsettings.json
 var botToken = Environment.GetEnvironmentVariable("BOT_TOKEN") ?? builder.Configuration["BotToken"];
@@ -22,6 +23,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=app.db"));
 
 var app = builder.Build();
+app.UseCors(policy => policy
+    .WithOrigins("*") // или "*" для теста
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+);
 
 // Создаём БД при старте
 using (var scope = app.Services.CreateScope())
@@ -33,6 +39,10 @@ using (var scope = app.Services.CreateScope())
 var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
 // --- Endpoints ---
+app.MapGet("/api/live", async () =>
+{
+    return Results.Ok("i'm ok");
+});
 
 app.MapPost("/api/orders", async (
     AppDbContext db,

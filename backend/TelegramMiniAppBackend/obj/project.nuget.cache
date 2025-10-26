@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "dgCRtYMsImk=",
+  "dgSpecHash": "RnjVzkapTek=",
   "success": true,
   "projectFilePath": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj",
   "expectedPackageFiles": [
@@ -45,7 +45,8 @@
       "message": "TelegramMiniAppBackend зависит от Telegram.Bot (>= 20.0.0), но версия Telegram.Bot 20.0.0 не найдена. Использовалась версия Telegram.Bot 22.0.0.",
       "libraryId": "Telegram.Bot",
       "targetGraphs": [
-        "net8.0"
+        "net8.0",
+        "net8.0/linux-x64"
       ]
     }
   ]
