@@ -7,7 +7,7 @@ public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-    public DbSet<ClientModel> Users => Set<ClientModel>();
+    public DbSet<ClientModel> Clients => Set<ClientModel>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<NotificationChat> NotificationChats => Set<NotificationChat>();
 
