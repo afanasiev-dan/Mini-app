@@ -119,7 +119,7 @@
 
     <div id="main">
       <!-- Экран выбора -->
-      <div id="selectionBlock" class="screen">
+      <div id="selectionBlock" class="screen hidden">
         <div class="d-flex flex-wrap gap-4 justify-content-center">
           <div class="card card-choice card-buy" onclick="navigateTo('buy')">
             <div class="card-body d-flex flex-column align-items-center justify-content-center">
@@ -274,14 +274,96 @@
               
               </div>
 
-              <button class="btn btn-outline-secondary w-100 mt-4" onclick="navigateTo('back')">← Назад</button>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('debug')">Отладка API</button>
+              <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Отладочный экран -->
+      <div id="debugBlock" class="screen start-width-column">
+        <div class="card" style="max-width: 500px; width: 100%;">
+          <div class="card-body">
+            <h5 class="card-title text-center mb-4">Отладка API</h5>
+
+            <div class="mb-3">
+              <label class="form-label">Telegram ID</label>
+              <input type="text" id="debugUserId" class="form-control" placeholder="123456789" value="123456789">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">ID заказа (для операций с конкретным заказом)</label>
+              <input type="text" id="debugOrderId" class="form-control" placeholder="1" value="1">
+            </div>
+
+            <!-- Кнопки для тестирования API -->
+            <div class="row mb-2">
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('getClient')">Получить клиента</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('checkClientExists')">Проверить клиента</button>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('getAllOrders')">Все заказы</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('getUserOrders')">Заказы пользователя</button>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('getOrderById')">Заказ по ID</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-primary w-100" onclick="testApi('healthCheck')">Проверка сервера</button>
+              </div>
+            </div>
+
+            <div class="row mb-2">
+              <div class="col-6">
+                <button class="btn btn-success w-100" onclick="testApi('createBuyOrder')">Создать buy заказ</button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-success w-100" onclick="testApi('createSellOrder')">Создать sell заказ</button>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-6">
+                <button class="btn btn-warning w-100" onclick="testApi('updateOrderStatus')">Обновить статус</button>
+              </div>
+              <div class="col-6">
+                <select id="debugStatusSelect" class="form-select">
+                  <option value="created">created</option>
+                  <option value="in work">in work</option>
+                  <option value="completed">completed</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Блок для отображения результатов -->
+            <div class="card bg-light">
+              <div class="card-body">
+                <h6 class="card-title">Результаты:</h6>
+                <pre id="debugOutput" class="text-start" style="max-height: 200px; overflow-y: auto; background-color: white; padding: 10px; border-radius: 4px; white-space: pre-wrap;">Здесь будут отображаться результаты тестов API...</pre>
+              </div>
+            </div>
+
+            <button class="btn btn-outline-secondary w-100 mt-3" onclick="navigateTo('back')">← Назад</button>
+          </div>
+        </div>
+      </div>
+
       <script>
-      let currentScreen = 'selectionBlock';
+      let currentScreen = 'debugBlock';
 
       let errorModalInstance = null;
 
@@ -304,7 +386,7 @@
       }
 
       function navigateTo(target) {
-        const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock'];
+        const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock', 'debugBlock'];
 
         const currentEl = document.getElementById(currentScreen);
         currentEl.classList.add('fade-out');
@@ -316,6 +398,9 @@
           if (target === 'back') {
             document.getElementById('selectionBlock').classList.remove('hidden');
             currentScreen = 'selectionBlock';
+          } else if (target === 'debug') {
+            document.getElementById('debugBlock').classList.remove('hidden');
+            currentScreen = 'debugBlock';
           } else {
             const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
             document.getElementById(screenId).classList.remove('hidden');
@@ -368,7 +453,10 @@
           if (response.ok) {
             const allOrders = await response.json();
             // Фильтруем ордера по userId
-            const userOrders = allOrders.filter(order => order.userId === userId);
+            const userOrders = allOrders.filter(order => {
+              // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
+              return order.userId == userId;
+            });
             // Сортируем по дате создания (новые первыми)
             userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
@@ -487,6 +575,122 @@
         });
       }
 
+      // Функции для отладки API
+      async function testApi(testType) {
+        const BACKEND_URL = 'https://p2p-hunters.ru';
+        // const BACKEND_URL = 'http://localhost:5120'; // Для локальной отладки
+
+        try {
+          let response;
+          let url;
+          let method = 'GET';
+          let body = null;
+          let headers = { 'Content-Type': 'application/json' };
+
+          const userId = document.getElementById('debugUserId').value || '123456789';
+          const orderId = document.getElementById('debugOrderId').value || '1';
+          const status = document.getElementById('debugStatusSelect').value;
+
+          switch(testType) {
+            case 'healthCheck':
+              url = `${BACKEND_URL}/live`;
+              break;
+              
+            case 'getClient':
+              url = `${BACKEND_URL}/api/Client/${userId}`;
+              break;
+              
+            case 'checkClientExists':
+              url = `${BACKEND_URL}/api/Client/exists/${userId}`;
+              break;
+              
+            case 'getAllOrders':
+              url = `${BACKEND_URL}/api/Order`;
+              break;
+              
+            case 'getUserOrders':
+              url = `${BACKEND_URL}/api/Order`;
+              break;
+              
+            case 'getOrderById':
+              url = `${BACKEND_URL}/api/Order/${orderId}`;
+              break;
+              
+            case 'createBuyOrder':
+              url = `${BACKEND_URL}/api/Order/buy_order`;
+              method = 'POST';
+              body = {
+                userId: parseInt(userId) || 123456789,
+                userName: "debug_user",
+                currency: "USDT",
+                bank: "Т-Банк",
+                amount: 100.50,
+                contactInfo: "Тестовый пользователь, 89991234567"
+              };
+              break;
+              
+            case 'createSellOrder':
+              url = `${BACKEND_URL}/api/Order/sell_order`;
+              method = 'POST';
+              body = {
+                userId: parseInt(userId) || 123456789,
+                userName: "debug_user",
+                currency: "USDT",
+                bank: "Т-Банк",
+                amount: 50.25,
+                paymentUserData: "4276123456789012",
+                contactInfo: "Тестовый пользователь"
+              };
+              break;
+              
+            case 'updateOrderStatus':
+              url = `${BACKEND_URL}/api/Order/order/${orderId}/status`;
+              method = 'PUT';
+              body = { status: status };
+              break;
+              
+            default:
+              throw new Error('Неизвестный тип теста: ' + testType);
+          }
+
+          // Показываем информацию о запросе
+          const requestInfo = `Запрос: ${method} ${url}\n`;
+          const requestBody = body ? `Тело: ${JSON.stringify(body, null, 2)}\n` : '';
+          updateDebugOutput(requestInfo + requestBody + 'Отправка запроса...\n');
+
+          response = await fetch(url, {
+            method: method,
+            headers: headers,
+            body: body ? JSON.stringify(body) : null
+          });
+
+          let result;
+          if (response.headers.get('content-type')?.includes('application/json')) {
+            result = await response.json();
+          } else {
+            result = await response.text();
+          }
+
+          const responseInfo = `\nОтвет ${response.status}: ${response.statusText}\n`;
+          const resultText = `Результат: ${JSON.stringify(result, null, 2)}`;
+          
+          updateDebugOutput(requestInfo + requestBody + responseInfo + resultText);
+          
+        } catch (error) {
+          const errorInfo = `Ошибка: ${error.message}`;
+          updateDebugOutput(errorInfo);
+          console.error('Ошибка при тестировании API:', error);
+        }
+      }
+
+      function updateDebugOutput(text) {
+        const outputElement = document.getElementById('debugOutput');
+        outputElement.textContent = text;
+        
+        // Прокручиваем до конца
+        outputElement.scrollTop = outputElement.scrollHeight;
+      }
+
       async function submitForm(type) {
         const WebApp = window.Telegram?.WebApp;
         const user = WebApp?.initDataUnsafe?.user;
@@ -563,8 +767,8 @@
         }
 
         // 👇 ЗАМЕНИТЕ НА ВАШ NGROK-АДРЕС!
-        // const BACKEND_URL = 'https://p2p-hunters.ru';
-        const BACKEND_URL = 'http://localhost:5120';
+        const BACKEND_URL = 'https://p2p-hunters.ru';
+        // const BACKEND_URL = 'http://localhost:5120';
 
         try {
           const endpoint = type === 'buy' ? '/api/Order/buy_order' : '/api/Order/sell_order';
@@ -590,6 +794,12 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
+        // Отображаем отладочный экран при загрузке
+        const debugBlock = document.getElementById('debugBlock');
+        if (debugBlock) {
+          debugBlock.classList.remove('hidden');
+        }
+        
         const input = document.querySelector('.contact-input');
 
         input.addEventListener('input', function (e) {
