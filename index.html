@@ -147,6 +147,15 @@
               <span>Личный кабинет</span>
             </div>
           </div>
+          
+          <div class="card card-choice card-profile" onclick="navigateTo('debug')">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+              <div class="icon-wrapper mb-3">
+                <i class="bi bi-gear icon-lg"></i>
+              </div>
+              <span>Тестировать</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -233,45 +242,20 @@
         <div class="card" style="max-width: 500px; width: 100%;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Ордера за последние 24 часа</h5>
-
-            <!-- <div class="mb-4">
-              <p id="telegram-username"><strong>Telegram:</strong> Загрузка...</p>
+            
+            <div class="mb-3">
+              <p id="telegram-username"><strong>Telegram:</strong> <span id="username-text">Загрузка...</span></p>
             </div>
 
-            <select class="form-select mb-3 bank-select">
-              <option selected>Выберите UID или сеть</option>
-              <option value="1">Bybit UID</option>
-              <option value="2">BSC (BEP20)</option>
-              <option value="3">Ethereum (ERC20)</option>
-              <option value="4">TRON (TRC20)</option>
-            </select> -->
-
             <div id="adress-wallet" class="mb-3">
-              <!-- <label class="form-label">Адрес</label>
-              <input type="number" class="form-control sum-input" placeholder="">
-              <button class="btn btn-primary w-100 mt-3 mb-3" onclick="submitForm('sell')">Сохранить</button> -->
-
               <h6>Ордера за последние 24 часа:</h6>
               
               <div class="text-muted" style="font-size: 0.875rem;">
-                Всего: 3 ордера
+                Всего: <span id="ordersCount">0</span> ордеров
               </div>
 
-              <div class="mt-3">
-                <!-- Примеры ордеров -->
-                <div class="order-item status-active">
-                  <div><strong>Покупка</strong> — 0.25 BTC</div>
-                  <small class="text-success">Активен</small>
-                </div>
-                <div class="order-item status-completed">
-                  <div><strong>Продажа</strong> — 0.1 BTC</div>
-                  <small class="text-info">Завершён</small>
-                </div>
-                <div class="order-item status-cancelled">
-                  <div><strong>Покупка</strong> — 0.05 BTC</div>
-                  <small class="text-danger">Отменён</small>
-                </div>
-              
+              <div id="ordersList" class="mt-3">
+                <!-- Ордера будут загружаться сюда -->
               </div>
 
             </div>
@@ -284,8 +268,7 @@
       </div>
 
       <!-- Отладочный экран -->
-       <div>kek</div>
-      <div id="debugBlock" class="screen start-width-column">
+      <div id="debugBlock" class="screen hidden start-width-column">
         <div class="card" style="max-width: 500px; width: 100%;">
           <div class="card-body">
             <h5 class="card-title text-center mb-4">Отладка API</h5>
@@ -351,10 +334,10 @@
             </div>
 
             <!-- Блок для отображения результатов -->
-            <div class="card bg-light">
+            <div class="card bg-dark">
               <div class="card-body">
                 <h6 class="card-title">Результаты:</h6>
-                <pre id="debugOutput" class="text-start" style="max-height: 200px; overflow-y: auto; background-color: white; padding: 10px; border-radius: 4px; white-space: pre-wrap;">Здесь будут отображаться результаты тестов API...</pre>
+                <pre id="debugOutput" class="text-start" style="max-height: 200px; overflow-y: auto; background-color: #2E3239; padding: 10px; border-radius: 4px; white-space: pre-wrap;">Здесь будут отображаться результаты тестов API...</pre>
               </div>
             </div>
 
@@ -396,6 +379,11 @@
           currentEl.classList.add('hidden');
           currentEl.classList.remove('fade-out');
 
+          // Clear the current screen's form fields when navigating away
+          if (currentScreen === 'buyForm' || currentScreen === 'sellForm') {
+            clearFormFields(currentScreen);
+          }
+
           if (target === 'back') {
             document.getElementById('selectionBlock').classList.remove('hidden');
             currentScreen = 'selectionBlock';
@@ -415,21 +403,46 @@
         }, 400);
       }
 
+      function clearFormFields(screenId) {
+        const screen = document.getElementById(screenId);
+        if (!screen) return;
+
+        // Reset all select elements to their default (first) option
+        const selects = screen.querySelectorAll('.bank-select');
+        selects.forEach(select => {
+          select.selectedIndex = 0;
+        });
+
+        // Clear all input fields
+        const inputs = screen.querySelectorAll('input');
+        inputs.forEach(input => {
+          if (input.type === 'number') {
+            input.value = '';
+          } else {
+            input.value = '';
+          }
+        });
+      }
+
       async function updateProfile() {
         const WebApp = window.Telegram?.WebApp;
         const user = WebApp?.initDataUnsafe?.user;
 
         if (user) {
-          const usernameEl = document.getElementById('telegram-username');
+          const usernameTextEl = document.getElementById('username-text');
           if (user.username) {
-            usernameEl.innerHTML = `<strong>Telegram:</strong> <a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
+            usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
           } else {
             const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-            usernameEl.innerHTML = `<strong>Telegram:</strong> ${fullName} (ID: ${user.id})`;
+            usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
           }
           
           // Загружаем ордера пользователя
           await loadUserOrders(user.id);
+        } else {
+          // Пользователь не авторизован
+          const usernameTextEl = document.getElementById('username-text');
+          usernameTextEl.textContent = 'не авторизован';
         }
       }
 
@@ -440,7 +453,7 @@
 
         try {
           // Показываем индикатор загрузки
-          const ordersContainer = document.querySelector('#adress-wallet .mt-3');
+          const ordersContainer = document.getElementById('ordersList');
           if (ordersContainer) {
             ordersContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
           }
@@ -473,7 +486,7 @@
         } catch (e) {
           showError('Ошибка сети при загрузке ордеров: ' + e.message);
           // Показываем сообщение об ошибке в списке ордеров
-          const ordersContainer = document.querySelector('#adress-wallet .mt-3');
+          const ordersContainer = document.getElementById('ordersList');
           if (ordersContainer) {
             ordersContainer.innerHTML = '<div class="text-danger text-center">Ошибка подключения к серверу</div>';
           }
@@ -481,13 +494,13 @@
       }
 
       function displayUserOrders(orders) {
-        const ordersContainer = document.querySelector('#adress-wallet .mt-3');
-        const ordersTotal = document.querySelector('#adress-wallet .text-muted');
+        const ordersContainer = document.getElementById('ordersList');
+        const ordersCountElement = document.getElementById('ordersCount');
         
-        if (!ordersContainer || !ordersTotal) return;
+        if (!ordersContainer || !ordersCountElement) return;
         
         // Обновляем общее количество ордеров
-        ordersTotal.textContent = `Всего: ${orders.length} ордер${getPluralForm(orders.length)}`;
+        ordersCountElement.textContent = `${orders.length} ${getPluralForm(orders.length)}`;
         
         // Очищаем контейнер
         ordersContainer.innerHTML = '';
@@ -784,6 +797,8 @@
 
           if (response.ok) {
             alert('Заявка создана!');
+            // Clear the form before navigating back
+            clearFormFields(currentScreen);
             navigateTo('back');
           } else {
             const errorText = await response.text();
@@ -795,10 +810,11 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Отображаем отладочный экран при загрузке
-        const debugBlock = document.getElementById('debugBlock');
-        if (debugBlock) {
-          debugBlock.classList.remove('hidden');
+        // Показываем главный экран выбора при загрузке
+        const selectionBlock = document.getElementById('selectionBlock');
+        if (selectionBlock) {
+          selectionBlock.classList.remove('hidden');
+          currentScreen = 'selectionBlock';
         }
         
         const input = document.querySelector('.contact-input');
