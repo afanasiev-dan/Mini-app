@@ -349,6 +349,7 @@
 
       <script>
       let currentScreen = 'debugBlock';
+      const BOT_USERNAME = 'your_bot_username'; // Замените на реальное имя бота
 
       let errorModalInstance = null;
 
@@ -386,19 +387,57 @@
           }
 
           if (target === 'back') {
-            document.getElementById('selectionBlock').classList.remove('hidden');
-            currentScreen = 'selectionBlock';
+            // Проверяем регистрацию пользователя при возврате на главный экран
+            const WebApp = window.Telegram?.WebApp;
+            const user = WebApp?.initDataUnsafe?.user;
+            
+            if (user) {
+              checkUserRegistration(user.id);
+            } else {
+              document.getElementById('selectionBlock').classList.remove('hidden');
+              currentScreen = 'selectionBlock';
+            }
           } else if (target === 'debug') {
             document.getElementById('debugBlock').classList.remove('hidden');
             currentScreen = 'debugBlock';
           } else {
-            const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
-            document.getElementById(screenId).classList.remove('hidden');
-            currentScreen = screenId;
+            // Проверяем, является ли целевой экраном один из форм, требующих регистрации
+            if (target === 'buy' || target === 'sell' || target === 'profile') {
+              // Проверяем, зарегистрирован ли пользователь
+              const WebApp = window.Telegram?.WebApp;
+              const user = WebApp?.initDataUnsafe?.user;
+              
+              if (user) {
+                checkUserRegistration(user.id).then(userExists => {
+                  if (userExists) {
+                    // Пользователь зарегистрирован, показываем целевой экран
+                    const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
+                    document.getElementById(screenId).classList.remove('hidden');
+                    currentScreen = screenId;
 
-            // 👇 Обновляем данные профиля, если открываем его
-            if (target === 'profile') {
-              updateProfile();
+                    // 👇 Обновляем данные профиля, если открываем его
+                    if (target === 'profile') {
+                      updateProfile();
+                    }
+                  } else {
+                    // Пользователь не зарегистрирован, показываем экран регистрации
+                    showRegistrationScreen();
+                  }
+                });
+              } else {
+                // Пользователь не авторизован, показываем экран регистрации
+                showRegistrationScreen();
+              }
+            } else {
+              // Для других экранов (например, debug) не требуем регистрации
+              const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
+              document.getElementById(screenId).classList.remove('hidden');
+              currentScreen = screenId;
+
+              // 👇 Обновляем данные профиля, если открываем его
+              if (target === 'profile') {
+                updateProfile();
+              }
             }
           }
         }, 400);
@@ -633,7 +672,6 @@
               method = 'POST';
               body = {
                 userId: parseInt(userId) || 123456789,
-                userName: "debug_user",
                 currency: "USDT",
                 bank: "Т-Банк",
                 amount: 100.50,
@@ -646,7 +684,6 @@
               method = 'POST';
               body = {
                 userId: parseInt(userId) || 123456789,
-                userName: "debug_user",
                 currency: "USDT",
                 bank: "Т-Банк",
                 amount: 50.25,
@@ -776,7 +813,6 @@
             
             formData = {
               userId: user.id,
-              userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
               currency: currencyValue,
               bank: bankValue,
               amount: amount,
@@ -807,7 +843,6 @@
             
             formData = {
               userId: user.id,
-              userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
               currency: currencyValue,
               bank: bankValue,
               amount: amount,
@@ -855,11 +890,16 @@
       }
 
       document.addEventListener('DOMContentLoaded', () => {
-        // Показываем главный экран выбора при загрузке
-        const selectionBlock = document.getElementById('selectionBlock');
-        if (selectionBlock) {
-          selectionBlock.classList.remove('hidden');
-          currentScreen = 'selectionBlock';
+        // Проверяем авторизацию пользователя и показываем соответствующий экран
+        const WebApp = window.Telegram?.WebApp;
+        const user = WebApp?.initDataUnsafe?.user;
+        
+        if (user) {
+          // Проверяем, зарегистрирован ли пользователь в системе
+          checkUserRegistration(user.id);
+        } else {
+          // Показываем экран регистрации, если пользователь не авторизован
+          showRegistrationScreen();
         }
         
         const input = document.querySelector('.contact-input');
@@ -905,6 +945,87 @@
           // Но для простоты оставим как есть
         });
       });
+
+      function checkUserRegistration(userId) {
+        return new Promise((resolve, reject) => {
+          // Проверяем, зарегистрирован ли пользователь в системе
+          const BACKEND_URL = 'https://p2p-hunters.ru';
+          // const BACKEND_URL = 'http://localhost:5120';
+
+          fetch(`${BACKEND_URL}/api/Client/exists/${userId}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.exists) {
+                // Пользователь зарегистрирован, показываем основной экран
+                const selectionBlock = document.getElementById('selectionBlock');
+                if (selectionBlock) {
+                  selectionBlock.classList.remove('hidden');
+                  currentScreen = 'selectionBlock';
+                }
+                resolve(true);
+              } else {
+                // Пользователь не зарегистрирован, показываем экран регистрации
+                showRegistrationScreen();
+                resolve(false);
+              }
+            })
+            .catch(error => {
+              console.error('Ошибка проверки регистрации пользователя:', error);
+              // Если не удалось проверить, показываем регистрацию на всякий случай
+              showRegistrationScreen();
+              resolve(false); // или reject(error) если нужно обрабатывать ошибку по-другому
+            });
+        });
+      }
+
+      function showRegistrationScreen() {
+        // Создаем экран регистрации, если его еще нет
+        let regScreen = document.getElementById('registrationScreen');
+        if (!regScreen) {
+          regScreen = document.createElement('div');
+          regScreen.id = 'registrationScreen';
+          regScreen.className = 'screen';
+          regScreen.innerHTML = `
+            <div class="card" style="max-width: 500px; width: 100%;">
+              <div class="card-body text-center">
+                <h5 class="card-title mb-4">Добро пожаловать!</h5>
+                <p class="card-text">Для начала работы с системой, пожалуйста, зарегистрируйтесь в телеграм боте.</p>
+                
+                <div class="alert alert-info" role="alert">
+                  <i class="bi bi-telegram me-2"></i>
+                  Перейдите в нашего телеграм бота и нажмите <strong>/start</strong>
+                </div>
+                
+                <a href="#" onclick="openTelegramBot(); return false;" class="btn btn-primary btn-lg mb-3">
+                  <i class="bi bi-telegram me-2"></i>
+                  Перейти в бот
+                </a>
+                
+                <p class="text-muted">После регистрации вы сможете использовать все функции приложения</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('main').appendChild(regScreen);
+        } else {
+          regScreen.classList.remove('hidden');
+        }
+
+        // Скрываем все остальные экраны
+        const screens = document.querySelectorAll('.screen');
+        screens.forEach(screen => {
+          if (screen.id !== 'registrationScreen') {
+            screen.classList.add('hidden');
+          }
+        });
+        
+        currentScreen = 'registrationScreen';
+      }
+      
+      function openTelegramBot() {
+        // Используем имя бота из конфигурации
+        const botLink = `https://t.me/${BOT_USERNAME}`;
+        window.open(botLink, '_blank');
+      }
       </script>
 
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">

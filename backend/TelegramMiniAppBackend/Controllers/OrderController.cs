@@ -197,7 +197,7 @@ public class OrderController : ControllerBase
         {
             var order = await db.Orders.Where(o => o.UserId == id).ToListAsync();
             if (order == null || order.Count() == 0)
-                return NotFound($"Ордера для пользователя с UserName {id} не найдены");
+                return NotFound($"Ордера для пользователя с TelegramId {id} не найдены");
 
             return Ok(order);
         }

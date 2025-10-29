@@ -1,10 +1,12 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace TelegramMiniAppBackend.Models;
 
+[Table("orders")]
 public class Order
 {
     public int Id { get; set; }
     public long UserId { get; set; }
-    public long UserName { get; set; }
     public string Type { get; set; } = "buy";
     public string Currency { get; set; } = "USDT";
     public string Bank { get; set; } = "";
