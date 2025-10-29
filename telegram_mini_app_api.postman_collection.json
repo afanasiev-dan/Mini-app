@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "Telegram Mini App API",
+    "description": "API для приложения Telegram Mini App",
+    "_postman_id": "12345678-1234-1234-1234-123456789012",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Clients",
+      "item": [
+        {
+          "name": "Create/Update Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telegramId\": 123456789,\n  \"username\": \"testuser\",\n  \"fullName\": \"Иван Петров\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Client",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Client",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Client/123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client", "123456789"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check Client Exists",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Client/exists/123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client", "exists", "123456789"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Client",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telegramId\": 123456789,\n  \"username\": \"testuser\",\n  \"fullName\": \"Иван Петров-новый\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Client/123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client", "123456789"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Client/123456789",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Client", "123456789"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Buy Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 123456789,\n  \"userName\": \"testuser\",\n  \"currency\": \"USDT\",\n  \"bank\": \"Т-Банк\",\n  \"amount\": 100.5,\n  \"contactInfo\": \"Иван Петров, 89991234567\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Order/buy_order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Order", "buy_order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Sell Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": 123456789,\n  \"userName\": \"testuser\",\n  \"currency\": \"USDT\",\n  \"bank\": \"Т-Банк\",\n  \"amount\": 50.25,\n  \"paymentUserData\": \"4276123456789012\",\n  \"contactInfo\": \"Иван Петров\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Order/sell_order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Order", "sell_order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/Order/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Order", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"in work\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/Order/order/1/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "Order", "order", "1", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/live",
+              "host": ["{{baseUrl}}"],
+              "path": ["live"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "id": "baseUrl",
+      "key": "baseUrl",
+      "value": "https://p2p-hunters.ru",
+      "type": "string"
+    }
+  ]
+}

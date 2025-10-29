@@ -13,7 +13,7 @@ namespace TelegramMiniAppBackend.Controllers
         }
 
         [HttpGet]
-        [Route("/live")]
+        [Route("live")]
         public async Task<IActionResult> Live()
         {
             _logger.LogInformation("Live endpoint called");

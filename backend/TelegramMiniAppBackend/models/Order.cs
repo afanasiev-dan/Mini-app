@@ -3,6 +3,7 @@ namespace TelegramMiniAppBackend.Models;
 public class Order
 {
     public int Id { get; set; }
+    public long UserId { get; set; }
     public long UserName { get; set; }
     public string Type { get; set; } = "buy";
     public string Currency { get; set; } = "USDT";

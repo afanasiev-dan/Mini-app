@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "MBhUjDp6BQQ=",
+  "dgSpecHash": "mKnLKsQb8FQ=",
   "success": true,
   "projectFilePath": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj",
   "expectedPackageFiles": [
@@ -39,9 +39,9 @@
     "/home/daniil/.nuget/packages/system.text.encodings.web/9.0.10/system.text.encodings.web.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/system.text.json/9.0.10/system.text.json.9.0.10.nupkg.sha512",
     "/home/daniil/.nuget/packages/telegram.bot/22.0.0/telegram.bot.22.0.0.nupkg.sha512",
+    "/home/daniil/.nuget/packages/microsoft.netcore.app.ref/8.0.15/microsoft.netcore.app.ref.8.0.15.nupkg.sha512",
     "/home/daniil/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.15/microsoft.aspnetcore.app.ref.8.0.15.nupkg.sha512",
-    "/home/daniil/.nuget/packages/microsoft.netcore.app.host.linux-x64/8.0.15/microsoft.netcore.app.host.linux-x64.8.0.15.nupkg.sha512",
-    "/home/daniil/.nuget/packages/microsoft.netcore.app.ref/8.0.15/microsoft.netcore.app.ref.8.0.15.nupkg.sha512"
+    "/home/daniil/.nuget/packages/microsoft.netcore.app.host.linux-x64/8.0.15/microsoft.netcore.app.host.linux-x64.8.0.15.nupkg.sha512"
   ],
   "logs": [
     {
@@ -51,7 +51,8 @@
       "message": "TelegramMiniAppBackend зависит от Telegram.Bot (>= 20.0.0), но версия Telegram.Bot 20.0.0 не найдена. Использовалась версия Telegram.Bot 22.0.0.",
       "libraryId": "Telegram.Bot",
       "targetGraphs": [
-        "net8.0"
+        "net8.0",
+        "net8.0/linux-x64"
       ]
     }
   ]

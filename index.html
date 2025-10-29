@@ -329,6 +329,7 @@
                   <option value="created">created</option>
                   <option value="in work">in work</option>
                   <option value="completed">completed</option>
+                  <option value="canceled">canceled</option>
                 </select>
               </div>
             </div>
@@ -533,6 +534,7 @@
           case 'created': return 'status-active';
           case 'in work': return 'status-inwork'; // добавим класс для "в работе"
           case 'completed': return 'status-completed';
+          case 'canceled': return 'status-cancelled'; // добавлен статус canceled
           default: return 'status-cancelled'; // для любого другого статуса
         }
       }
@@ -542,6 +544,7 @@
           case 'created': return 'Активен';
           case 'in work': return 'В работе';
           case 'completed': return 'Завершён';
+          case 'canceled': return 'Отменён'; // добавлен текст для canceled
           default: return status; // для других статусов просто отображаем как есть
         }
       }
