@@ -1,4 +1,4 @@
-let currentScreen = 'debugBlock';
+let currentScreen = 'selectionBlock';
 
 let errorModalInstance = null;
 
@@ -23,12 +23,17 @@ function copyError() {
 function navigateTo(target) {
     const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock'];
 
+    // Проверяем, существует ли текущий элемент, прежде чем работать с ним
     const currentEl = document.getElementById(currentScreen);
-    currentEl.classList.add('fade-out');
+    if (currentEl) {
+        currentEl.classList.add('fade-out');
+    }
 
     setTimeout(() => {
-        currentEl.classList.add('hidden');
-        currentEl.classList.remove('fade-out');
+        if (currentEl) {
+            currentEl.classList.add('hidden');
+            currentEl.classList.remove('fade-out');
+        }
 
         // Clear the current screen's form fields when navigating away
         if (currentScreen === 'buyForm' || currentScreen === 'sellForm') {
@@ -36,8 +41,11 @@ function navigateTo(target) {
         }
 
         if (target === 'back') {
-            document.getElementById('selectionBlock').classList.remove('hidden');
-            currentScreen = 'selectionBlock';
+            const selectionEl = document.getElementById('selectionBlock');
+            if (selectionEl) {
+                selectionEl.classList.remove('hidden');
+                currentScreen = 'selectionBlock';
+            }
         } else if (target === 'debug') {
             // debug-компонент больше не используется, можно уведомить об этом или игнорировать
             console.warn('Debug component is no longer available');
@@ -45,6 +53,14 @@ function navigateTo(target) {
             const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
             const targetElement = document.getElementById(screenId);
             if (targetElement) {
+                // Скрываем все экраны перед показом нового
+                const allScreens = document.querySelectorAll('.screen');
+                allScreens.forEach(screen => {
+                    if (screen !== targetElement) {
+                        screen.classList.add('hidden');
+                    }
+                });
+                
                 targetElement.classList.remove('hidden');
                 currentScreen = screenId;
 
