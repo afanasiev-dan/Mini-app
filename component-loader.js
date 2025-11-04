@@ -48,7 +48,7 @@ class ComponentLoader {
       { elementId: 'buy-form-placeholder', path: 'components/buy-form.html' },
       { elementId: 'sell-form-placeholder', path: 'components/sell-form.html' },
       { elementId: 'profile-placeholder', path: 'components/profile.html' },
-      { elementId: 'debug-placeholder', path: 'components/debug.html' }
+      // { elementId: 'debug-placeholder', path: 'components/debug.html' }
     ];
 
     // Wait for all components to load
@@ -67,7 +67,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Initialize the app after all components are loaded
   setTimeout(() => {
-    // Show the selection screen after components are loaded
+    // Hide all screens first
+    const allScreens = document.querySelectorAll('.screen');
+    allScreens.forEach(screen => {
+      screen.classList.add('hidden');
+    });
+    
+    // Then show the selection screen after components are loaded
     const selectionBlock = document.getElementById('selectionBlock');
     if (selectionBlock) {
       selectionBlock.classList.remove('hidden');

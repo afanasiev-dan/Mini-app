@@ -21,7 +21,7 @@ function copyError() {
 }
 
 function navigateTo(target) {
-    const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock', 'debugBlock'];
+    const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock'];
 
     const currentEl = document.getElementById(currentScreen);
     currentEl.classList.add('fade-out');
@@ -39,16 +39,21 @@ function navigateTo(target) {
             document.getElementById('selectionBlock').classList.remove('hidden');
             currentScreen = 'selectionBlock';
         } else if (target === 'debug') {
-            document.getElementById('debugBlock').classList.remove('hidden');
-            currentScreen = 'debugBlock';
+            // debug-компонент больше не используется, можно уведомить об этом или игнорировать
+            console.warn('Debug component is no longer available');
         } else {
             const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
-            document.getElementById(screenId).classList.remove('hidden');
-            currentScreen = screenId;
+            const targetElement = document.getElementById(screenId);
+            if (targetElement) {
+                targetElement.classList.remove('hidden');
+                currentScreen = screenId;
 
-            // 👇 Обновляем данные профиля, если открываем его
-            if (target === 'profile') {
-                updateProfile();
+                // 👇 Обновляем данные профиля, если открываем его
+                if (target === 'profile') {
+                    updateProfile();
+                }
+            } else {
+                console.error(`Screen with ID ${screenId} not found`);
             }
         }
     }, 400);
@@ -508,6 +513,12 @@ async function submitForm(type) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Сначала скрываем все экраны
+    const allScreens = document.querySelectorAll('.screen');
+    allScreens.forEach(screen => {
+        screen.classList.add('hidden');
+    });
+    
     // Показываем главный экран выбора при загрузке
     const selectionBlock = document.getElementById('selectionBlock');
     if (selectionBlock) {
