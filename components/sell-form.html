@@ -1,0 +1,43 @@
+<!-- Форма продажи -->
+<div id="sellForm" class="screen hidden start-width-column">
+    <div class="card" style="max-width: 400px;">
+        <div class="card-body">
+            <h5 class="card-title text-center mb-4">Создание заявки на продажу</h5>
+
+            <select class="form-select mb-3 bank-select">
+                <option selected value="">Выберите валюту</option>
+                <option value="USDT">USDT</option>
+                <option value="USDC">USDC</option>
+                <option value="BTC">BTC</option>
+                <option value="ETH">ETH</option>
+            </select>
+
+            <select class="form-select mb-3 bank-select">
+                <option selected value="">Выберите банк</option>
+                <option value="Т-Банк">Т-Банк</option>
+                <option value="Совкомбанк">Совкомбанк</option>
+                <option value="ПСБ банк">ПСБ банк</option>
+            </select>
+            <div class="mb-3">
+                <label class="form-label">Сумма</label>
+                <input type="number" class="form-control sum-input" placeholder="0,252">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Номер телефона или карты</label>
+                <input 
+                    type="text" 
+                    class="form-control contact-input" 
+                    placeholder="89993331111"
+                    inputmode="numeric"
+                >
+            </div>
+            <div>
+                <label class="form-label">ФИО получателя</label>
+                <input type="text" class="form-control" placeholder="Вася Криптовалютов">
+            </div>
+            <button class="btn btn-primary w-100 mt-3" onclick="submitForm('sell')">Создать заявку</button>
+            <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
+        </div>
+    </div>
+</div>

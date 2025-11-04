@@ -1,0 +1,40 @@
+<!-- Экран выбора -->
+<div id="selectionBlock" class="screen hidden">
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+        <div class="card card-choice card-buy" onclick="navigateTo('buy')">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div class="icon-wrapper mb-3" >
+                    <i class="bi bi-currency-dollar icon-lg"></i>
+                </div>
+                <span>Покупка</span>
+            </div>
+        </div>
+
+        <div class="card card-choice card-sell" onclick="navigateTo('sell')">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div class="icon-wrapper mb-3">
+                    <i class="bi bi-cash icon-lg"></i>
+                </div>
+                <span>Продажа</span>
+            </div>
+        </div>
+
+        <div class="card card-choice card-profile" onclick="navigateTo('profile')">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div class="icon-wrapper mb-3">
+                    <i class="bi bi-person-circle icon-lg"></i>
+                </div>
+                <span>Личный кабинет</span>
+            </div>
+        </div>
+        
+        <div class="card card-choice card-profile" onclick="navigateTo('debug')">
+            <div class="card-body d-flex flex-column align-items-center justify-content-center">
+                <div class="icon-wrapper mb-3">
+                    <i class="bi bi-gear icon-lg"></i>
+                </div>
+                <span>Тестировать</span>
+            </div>
+        </div>
+    </div>
+</div>
