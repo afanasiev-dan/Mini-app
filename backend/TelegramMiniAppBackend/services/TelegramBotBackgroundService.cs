@@ -23,7 +23,7 @@ public class TelegramBotBackgroundService : BackgroundService
 
         using var scope = _serviceProvider.CreateScope();
         var botClient = scope.ServiceProvider.GetRequiredService<TelegramBotClient>();
-        var botService = scope.ServiceProvider.GetRequiredService<TelegramBotService>();
+        // var botService = scope.ServiceProvider.GetRequiredService<TelegramBotService>();
 
         // Удаляем текущий webhook, чтобы использовать polling
         try
@@ -67,6 +67,8 @@ public class TelegramBotBackgroundService : BackgroundService
             try
             {
                 _logger.LogInformation("Received update ID: {UpdateId}, Type: {UpdateType}", update.Id, update.Type);
+                using var scope = _serviceProvider.CreateScope();
+                var botService = scope.ServiceProvider.GetRequiredService<TelegramBotService>();
                 await botService.HandleUpdateAsync(update);
             }
             catch (Exception ex)

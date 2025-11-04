@@ -42,10 +42,10 @@ app.UseCors(policy => policy
 app.MapControllers();
 
 // Создаём БД
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.EnsureCreated();
-}
+// using (var scope = app.Services.CreateScope())
+// {
+//     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+//     context.Database.EnsureCreated();
+// }
 
 app.Run();

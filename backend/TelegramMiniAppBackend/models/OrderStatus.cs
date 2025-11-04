@@ -6,5 +6,4 @@ public class OrderStatus
     public const string InWork = "in work";
     public const string Completed = "completed";
     public const string Canceled = "canceled";
-
 }

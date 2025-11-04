@@ -207,4 +207,28 @@ public class OrderController : ControllerBase
             return BadRequest("Ошибка сервера при получении ордера");
         }
     }
+
+    [HttpPost("sync")]
+    public async Task<IActionResult> GetOrdersByTelegramId(IEnumerable<string> ids)
+    {
+        try
+        {
+            var orders = await db.Orders.ToListAsync();
+            if (orders == null || orders.Count() == 0)
+                return NotFound($"Ордера в базе данных не найдены");
+
+            var ordersToUpdate = orders.Where(o => ids.Contains(o.Id.ToString()));
+            foreach (var order in ordersToUpdate)
+                order.Sync = true;
+
+            await db.SaveChangesAsync();
+
+            return Ok(orders);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при обновление статуса синхронизации ордеров");
+            return BadRequest("Ошибка при обновление статуса синхронизации ордеров");
+        }
+    }
 }
