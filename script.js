@@ -131,7 +131,7 @@ async function loadUserOrders(userId) {
         }
 
         // Получаем все ордера
-        const response = await fetch(`${BACKEND_URL}/api/Orderorders/user/${userId}/last-day`, {
+        const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${userId}/last-day`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -577,6 +577,11 @@ async function submitForm(type) {
             alert('Заявка создана!');
             // Clear the form before navigating back
             clearFormFields(currentScreen);
+            // Восстанавливаем кнопку перед навигацией
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+            }
             navigateTo('back');
         } else {
             const errorText = await response.text();
