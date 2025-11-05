@@ -218,6 +218,8 @@ function displayUserOrders(orders) {
     
     if (!ordersContainer || !ordersCountElement) return;
     
+    let ordersCount = orders.length;
+
     // Обновляем общее количество ордеров
     ordersCountElement.textContent = `${orders.length} ${getPluralForm(orders.length)}`;
     
@@ -496,14 +498,28 @@ async function submitForm(type) {
             return;
         }
 
-        if (type === 'buy' && uid <= 0) {
-            showError("Пожалуйста, введите корректный UID");
-            // Восстанавливаем кнопку
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.textContent = 'Создать заявку';
+        if (type === 'buy') {
+            if (uid <= 0) {
+                showError("Пожалуйста, введите корректный UID");
+                // Восстанавливаем кнопку
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Создать заявку';
+                }
+                return;
             }
-            return;
+
+            // Проверяем длину UID: от 6 до 10 символов
+            const uidStr = inputs[0]?.value?.toString();
+            if (uidStr && (uidStr.length < 6 || uidStr.length > 10)) {
+                showError("UID должен содержать от 6 до 10 символов");
+                // Восстанавливаем кнопку
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Создать заявку';
+                }
+                return;
+            }
         }
 
         let formData;
@@ -548,6 +564,27 @@ async function submitForm(type) {
                 return;
             }
             
+            // Проверяем, что данные для оплаты не пустые
+            if (!paymentUserData.trim()) {
+                showError("Пожалуйста, укажите номер телефона или карты");
+                // Восстанавливаем кнопку
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Создать заявку';
+                }
+                return;
+            }
+
+            if (!contactInfo.trim()) {
+                showError("Пожалуйста, укажите ФИО получателя");
+                // Восстанавливаем кнопку
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Создать заявку';
+                }
+                return;
+            }
+
             formData = {
                 userId: user.id,
                 userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
@@ -616,46 +653,49 @@ document.addEventListener('DOMContentLoaded', () => {
         currentScreen = 'selectionBlock';
     }
     
-    const input = document.querySelector('.contact-input');
+    // Находим все элементы с классом contact-input (на всех формах)
+    const contactInputs = document.querySelectorAll('.contact-input');
+    
+    contactInputs.forEach(input => {
+        input.addEventListener('input', function (e) {
+            let value = e.target.value;
 
-    input.addEventListener('input', function (e) {
-        let value = e.target.value;
+            // Убираем всё, кроме цифр и +
+            value = value.replace(/[^\d+]/g, '');
 
-        // Убираем всё, кроме цифр и +
-        value = value.replace(/[^\d+]/g, '');
+            // Определяем тип: телефон или карта
+            let isPhone = false;
+            if (value.startsWith('+7')) {
+                isPhone = true;
+                value = value.replace('+7', '7'); // временно заменяем для обработки
+            } else if (value.startsWith('8')) {
+                isPhone = true;
+                value = value.replace(/^8/, '7'); // приводим к 7...
+            } else if (value.startsWith('7') && value.length <= 11) {
+                isPhone = true;
+            }
 
-        // Определяем тип: телефон или карта
-        let isPhone = false;
-        if (value.startsWith('+7')) {
-            isPhone = true;
-            value = value.replace('+7', '7'); // временно заменяем для обработки
-        } else if (value.startsWith('8')) {
-            isPhone = true;
-            value = value.replace(/^8/, '7'); // приводим к 7...
-        } else if (value.startsWith('7') && value.length <= 11) {
-            isPhone = true;
-        }
+            // Форматируем
+            if (isPhone && value.length <= 11) {
+                // Формат: +7 (999) 999-99-99
+                value = value.slice(0, 11); // не больше 11 цифр
+                let formatted = '+7';
+                if (value.length > 1) formatted += ' (' + value.slice(1, 4);
+                if (value.length > 4) formatted += ') ' + value.slice(4, 7);
+                if (value.length > 7) formatted += '-' + value.slice(7, 9);
+                if (value.length > 9) formatted += '-' + value.slice(9, 11);
+                e.target.value = formatted;
+            } else {
+                // Формат карты: XXXX XXXX XXXX XXXX
+                value = value.replace(/\D/g, '').slice(0, 16); // только цифры, макс 16
+                e.target.value = value.replace(/(\d{4})/g, '$1 ').trim();
+            }
+        });
 
-        // Форматируем
-        if (isPhone && value.length <= 11) {
-            // Формат: +7 (999) 999-99-99
-            value = value.slice(0, 11); // не больше 11 цифр
-            let formatted = '+7';
-            if (value.length > 1) formatted += ' (' + value.slice(1, 4);
-            if (value.length > 4) formatted += ') ' + value.slice(4, 7);
-            if (value.length > 7) formatted += '-' + value.slice(7, 9);
-            if (value.length > 9) formatted += '-' + value.slice(9, 11);
-            e.target.value = formatted;
-        } else {
-            // Формат карты: XXXX XXXX XXXX XXXX
-            value = value.replace(/\D/g, '').slice(0, 16); // только цифры, макс 16
-            e.target.value = value.replace(/(\d{4})/g, '$1 ').trim();
-        }
-    });
-
-    // Дополнительно: очистка при фокусе (опционально)
-    input.addEventListener('focus', function () {
-        // Можно сохранить "сырое" значение и показать его без форматирования при фокусе
-        // Но для простоты оставим как есть
+        // Дополнительно: очистка при фокусе (опционально)
+        input.addEventListener('focus', function () {
+            // Можно сохранить "сырое" значение и показать его без форматирования при фокусе
+            // Но для простоты оставим как есть
+        });
     });
 });
