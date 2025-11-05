@@ -10,7 +10,7 @@ namespace TelegramMiniAppBackend.Services
             {
                 UserId = buyForm.UserId, // Using UserId from the form as the user identifier
                 Type = "buy",
-                UID = -1,
+                UID = buyForm.UID,
                 Currency = buyForm.Currency ?? "USDT",
                 Bank = buyForm.Bank ?? "",
                 Amount = buyForm.Amount,

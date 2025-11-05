@@ -6,5 +6,6 @@ public class OrderBuyForm
     public string Currency { get; set; } = "USDT";
     public string Bank { get; set; } = "";
     public decimal Amount { get; set; }
+    public long UID { get; set; }
     public string ContactInfo { get; set; } = "";
 }

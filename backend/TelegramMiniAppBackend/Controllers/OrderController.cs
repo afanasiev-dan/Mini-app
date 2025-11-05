@@ -208,6 +208,26 @@ public class OrderController : ControllerBase
         }
     }
 
+    [HttpGet("orders/user/{id}/last-day")]
+    public async Task<IActionResult> GetLastDayOrdersByTelegramId(int id)
+    {
+        try
+        {
+            var yesterday = DateTime.UtcNow.AddDays(-1);
+            
+            var order = await db.Orders.Where(o => o.UserId == id && o.CreatedAt.Date >= yesterday.Date).ToListAsync();
+            if (order == null || order.Count() == 0)
+                return NotFound($"Ордера для пользователя с TelegramId {id} не найдены");
+
+            return Ok(order);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Ошибка при получении ордера {OrderId}", id);
+            return BadRequest("Ошибка сервера при получении ордера");
+        }
+    }
+
     [HttpPost("sync")]
     public async Task<IActionResult> GetOrdersByTelegramId(IEnumerable<string> ids)
     {
