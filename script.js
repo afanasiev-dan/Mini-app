@@ -131,18 +131,18 @@ async function loadUserOrders(userId) {
         }
 
         // Получаем все ордера
-        const response = await fetch(`${BACKEND_URL}/api/Order`, {
+        const response = await fetch(`${BACKEND_URL}/api/Orderorders/user/${userId}/last-day`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
 
         if (response.ok) {
-            const allOrders = await response.json();
+            const userOrders = await response.json();
             // Фильтруем ордера по userId
-            const userOrders = allOrders.filter(order => {
-                // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
-                return order.userId == userId;
-            });
+            // const userOrders = allOrders.filter(order => {
+            //     // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
+            //     return order.userId == userId;
+            // });
             // Сортируем по дате создания (новые первыми)
             userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             
@@ -164,6 +164,53 @@ async function loadUserOrders(userId) {
         }
     }
 }
+
+// async function loadUserOrders(userId) {
+//     // 👇 ЗАМЕНИТЕ НА ВАШ NGROK-АДРЕС!
+//     const BACKEND_URL = 'https://p2p-hunters.ru';
+//     // const BACKEND_URL = 'http://localhost:5120';
+
+//     try {
+//         // Показываем индикатор загрузки
+//         const ordersContainer = document.getElementById('ordersList');
+//         if (ordersContainer) {
+//             ordersContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+//         }
+
+//         // Получаем все ордера
+//         const response = await fetch(`${BACKEND_URL}/api/Order`, {
+//             method: 'GET',
+//             headers: { 'Content-Type': 'application/json' }
+//         });
+
+//         if (response.ok) {
+//             const allOrders = await response.json();
+//             // Фильтруем ордера по userId
+//             const userOrders = allOrders.filter(order => {
+//                 // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
+//                 return order.userId == userId;
+//             });
+//             // Сортируем по дате создания (новые первыми)
+//             userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+//             displayUserOrders(userOrders);
+//         } else {
+//             const errorText = await response.text();
+//             showError('Ошибка при загрузке ордеров: ' + errorText);
+//             // Показываем сообщение об ошибке в списке ордеров
+//             if (ordersContainer) {
+//                 ordersContainer.innerHTML = '<div class="text-danger text-center">Ошибка загрузки ордеров</div>';
+//             }
+//         }
+//     } catch (e) {
+//         showError('Ошибка сети при загрузке ордеров: ' + e.message);
+//         // Показываем сообщение об ошибке в списке ордеров
+//         const ordersContainer = document.getElementById('ordersList');
+//         if (ordersContainer) {
+//             ordersContainer.innerHTML = '<div class="text-danger text-center">Ошибка подключения к серверу</div>';
+//         }
+//     }
+// }
 
 function displayUserOrders(orders) {
     const ordersContainer = document.getElementById('ordersList');
@@ -219,6 +266,7 @@ function getOrderStatusText(status) {
         case 'created': return 'Активен';
         case 'in work': return 'В работе';
         case 'completed': return 'Завершён';
+        case 'canceled': return 'Отменён';
         default: return status; // для других статусов просто отображаем как есть
     }
 }
@@ -424,7 +472,20 @@ async function submitForm(type) {
             return;
         }
         
-        const amount = parseFloat(inputs[0]?.value);
+        let amount, uid, contactInfo, paymentUserData;
+        
+        if (type === 'buy') {
+            // Для формы покупки: [UID, amount, contactInfo]
+            uid = parseInt(inputs[0]?.value) || 0;
+            amount = parseFloat(inputs[1]?.value);
+            contactInfo = inputs[2]?.value || '';
+        } else {
+            // Для формы продажи: [amount, paymentUserData, contactInfo]
+            amount = parseFloat(inputs[0]?.value);
+            paymentUserData = inputs[1]?.value || '';
+            contactInfo = inputs[2]?.value || '';
+        }
+
         if (isNaN(amount) || amount <= 0) {
             showError("Пожалуйста, введите корректную сумму");
             // Восстанавливаем кнопку
@@ -435,9 +496,18 @@ async function submitForm(type) {
             return;
         }
 
+        if (type === 'buy' && uid <= 0) {
+            showError("Пожалуйста, введите корректный UID");
+            // Восстанавливаем кнопку
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+            }
+            return;
+        }
+
         let formData;
         if (type === 'buy') {
-            const contactInfo = inputs[1]?.value || '';
             if (!contactInfo.trim()) {
                 showError("Пожалуйста, укажите контактную информацию");
                 // Восстанавливаем кнопку
@@ -454,10 +524,10 @@ async function submitForm(type) {
                 currency: currencyValue,
                 bank: bankValue,
                 amount: amount,
+                uid: uid,  // Добавляем UID к данным ордера
                 contactInfo: contactInfo
             };
         } else if (type === 'sell') {
-            const paymentUserData = inputs[1]?.value || '';
             if (!paymentUserData.trim()) {
                 showError("Пожалуйста, укажите данные для оплаты");
                 // Восстанавливаем кнопку
@@ -468,7 +538,6 @@ async function submitForm(type) {
                 return;
             }
             
-            const contactInfo = inputs[2]?.value || '';
             if (!contactInfo.trim()) {
                 showError("Пожалуйста, укажите контактную информацию");
                 // Восстанавливаем кнопку
