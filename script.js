@@ -64,6 +64,9 @@ function navigateTo(target) {
                 targetElement.classList.remove('hidden');
                 currentScreen = screenId;
 
+                // Инициализируем форматирование контактных полей на новом экране
+                initializeContactInputFormatting(targetElement);
+
                 // 👇 Обновляем данные профиля, если открываем его
                 if (target === 'profile') {
                     updateProfile();
@@ -419,6 +422,59 @@ async function testApi(testType) {
     }
 }
 
+function initializeContactInputFormatting(container = document) {
+    // Находим все элементы с классом contact-input
+    const contactInputs = container.querySelectorAll('.contact-input');
+    
+    contactInputs.forEach(input => {
+        // Проверяем, есть ли уже обработчик, чтобы не дублировать
+        if (!input.hasAttribute('data-contact-handler')) {
+            input.setAttribute('data-contact-handler', 'true');
+            
+            input.addEventListener('input', function (e) {
+                let value = e.target.value;
+
+                // Убираем всё, кроме цифр и +
+                value = value.replace(/[^\d+]/g, '');
+
+                // Определяем тип: телефон или карта
+                let isPhone = false;
+                if (value.startsWith('+7')) {
+                    isPhone = true;
+                    value = value.replace('+7', '7'); // временно заменяем для обработки
+                } else if (value.startsWith('8')) {
+                    isPhone = true;
+                    value = value.replace(/^8/, '7'); // приводим к 7...
+                } else if (value.startsWith('7') && value.length <= 11) {
+                    isPhone = true;
+                }
+
+                // Форматируем
+                if (isPhone && value.length <= 11) {
+                    // Формат: +7 (999) 999-99-99
+                    value = value.slice(0, 11); // не больше 11 цифр
+                    let formatted = '+7';
+                    if (value.length > 1) formatted += ' (' + value.slice(1, 4);
+                    if (value.length > 4) formatted += ') ' + value.slice(4, 7);
+                    if (value.length > 7) formatted += '-' + value.slice(7, 9);
+                    if (value.length > 9) formatted += '-' + value.slice(9, 11);
+                    e.target.value = formatted;
+                } else {
+                    // Формат карты: XXXX XXXX XXXX XXXX
+                    value = value.replace(/\D/g, '').slice(0, 16); // только цифры, макс 16
+                    e.target.value = value.replace(/(\d{4})/g, '$1 ').trim();
+                }
+            });
+
+            // Дополнительно: очистка при фокусе (опционально)
+            input.addEventListener('focus', function () {
+                // Можно сохранить "сырое" значение и показать его без форматирования при фокусе
+                // Но для простоты оставим как есть
+            });
+        }
+    });
+}
+
 function updateDebugOutput(text) {
     const outputElement = document.getElementById('debugOutput');
     outputElement.textContent = text;
@@ -653,49 +709,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentScreen = 'selectionBlock';
     }
     
-    // Находим все элементы с классом contact-input (на всех формах)
-    const contactInputs = document.querySelectorAll('.contact-input');
-    
-    contactInputs.forEach(input => {
-        input.addEventListener('input', function (e) {
-            let value = e.target.value;
-
-            // Убираем всё, кроме цифр и +
-            value = value.replace(/[^\d+]/g, '');
-
-            // Определяем тип: телефон или карта
-            let isPhone = false;
-            if (value.startsWith('+7')) {
-                isPhone = true;
-                value = value.replace('+7', '7'); // временно заменяем для обработки
-            } else if (value.startsWith('8')) {
-                isPhone = true;
-                value = value.replace(/^8/, '7'); // приводим к 7...
-            } else if (value.startsWith('7') && value.length <= 11) {
-                isPhone = true;
-            }
-
-            // Форматируем
-            if (isPhone && value.length <= 11) {
-                // Формат: +7 (999) 999-99-99
-                value = value.slice(0, 11); // не больше 11 цифр
-                let formatted = '+7';
-                if (value.length > 1) formatted += ' (' + value.slice(1, 4);
-                if (value.length > 4) formatted += ') ' + value.slice(4, 7);
-                if (value.length > 7) formatted += '-' + value.slice(7, 9);
-                if (value.length > 9) formatted += '-' + value.slice(9, 11);
-                e.target.value = formatted;
-            } else {
-                // Формат карты: XXXX XXXX XXXX XXXX
-                value = value.replace(/\D/g, '').slice(0, 16); // только цифры, макс 16
-                e.target.value = value.replace(/(\d{4})/g, '$1 ').trim();
-            }
-        });
-
-        // Дополнительно: очистка при фокусе (опционально)
-        input.addEventListener('focus', function () {
-            // Можно сохранить "сырое" значение и показать его без форматирования при фокусе
-            // Но для простоты оставим как есть
-        });
-    });
+    // Инициализируем форматирование контактных полей на всех экранах
+    initializeContactInputFormatting();
 });
