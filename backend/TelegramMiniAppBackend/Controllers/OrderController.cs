@@ -214,10 +214,10 @@ public class OrderController : ControllerBase
         try
         {
             var yesterday = DateTime.UtcNow.AddDays(-1);
-            
+
             var order = await db.Orders.Where(o => o.UserId == id && o.CreatedAt.Date >= yesterday.Date).ToListAsync();
             if (order == null || order.Count() == 0)
-                return NotFound($"Ордера для пользователя с TelegramId {id} не найдены");
+                return Ok(new List<Order>[0]);
 
             return Ok(order);
         }
