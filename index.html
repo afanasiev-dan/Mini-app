@@ -479,7 +479,9 @@
                     }
 
                     // Загружаем ордера пользователя
+                        dt.innerText = '<p>до загрузки ордеров</p>';
                     await loadUserOrders(user.id);
+                        dt.innerText = '<p>после загрузки ордеров</p>';
                 } else {
                     // Пользователь не авторизован
                     const usernameTextEl = document.getElementById('username-text');
@@ -488,10 +490,13 @@
             }
 
             async function loadUserOrders(userId) {
+   const dt = document.getElementById('debug-text');
+
+                        dt.innerText = `<p>pop</p>`;               
+
                 const BACKEND_URL = 'https://p2p-hunters.ru';
                 const user = WebApp?.initDataUnsafe?.user;
-                const dt = document.getElementById('debug-text');
-
+              
                 try {
                     if (!dt) {
                         dt.innerText = `<p>Элемент #debug-text не найден</p>`;
