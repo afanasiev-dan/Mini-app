@@ -759,7 +759,6 @@
                     const screen = document.getElementById(currentScreen);
                     const currencySelect = screen.querySelectorAll('.bank-select')[0];
                     const bankSelect = screen.querySelectorAll('.bank-select')[1];
-                    const uidValue = screen.querySelector('.uid-input').value;
                     const inputs = screen.querySelectorAll('input');
 
                     // Извлекаем значения из селектов (значения, а не индексы)
@@ -811,9 +810,18 @@
                             return;
                         }
 
+                        const uidValue = screen.querySelector('.uid-input').value;
+                        if (!uidValue.trim()) {
+                            showError("Пожалуйста, укажите UID");
+                            // Восстанавливаем кнопку
+                            if (submitButton) {
+                                submitButton.disabled = false;
+                                submitButton.textContent = 'Создать заявку';
+                            }
+                            return;
+                        }
                         formData = {
                             userId: user.id,
-                            // userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,
@@ -845,7 +853,6 @@
 
                         formData = {
                             userId: user.id,
-                            // userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,
