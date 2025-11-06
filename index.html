@@ -489,14 +489,6 @@
                 const dt = document.getElementById('debug-text');
 
                 try {
-                    if (!dt) {
-                        console.error('Элемент #debug-text не найден');
-                    } else if (!user) {
-                        dt.innerHTML = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
-                    } else {
-                        dt.innerHTML = `<p>ID: ${user.id}, Имя: ${user.first_name}, Юзернейм: @${user.username || '—'}`;
-                    }
-
                     // Показываем индикатор загрузки
                     const ordersContainer = document.getElementById('ordersList');
                     if (ordersContainer) {
