@@ -136,6 +136,7 @@
 <body>
     <div>
         <p>Test version: 0.0.0.20</p>
+        <p id="debug-text"></p>
     </div>
 
     <!-- Debug element removed to clean up interface -->
@@ -464,11 +465,14 @@
             async function updateProfile() {
                 const WebApp = window.Telegram?.WebApp;
                 const user = WebApp?.initDataUnsafe?.user;
+                const dt = document.getElementById('debug-text');
 
                 if (user) {
                     const usernameTextEl = document.getElementById('username-text');
                     if (user.username) {
                         usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username} id: ${user.id}</a>`;
+
+                        dt.innerText = '<p>⚠️Kek </p>';
                     } else {
                         const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                         usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
@@ -489,6 +493,14 @@
                 const dt = document.getElementById('debug-text');
 
                 try {
+                    if (!dt) {
+                        console.error('Элемент #debug-text не найден');
+                    } else if (!user) {
+                        dt.innerText = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
+                    } else {
+                        dt.innerText = `<p>ID: ${user.id}, Имя: ${user.first_name}, Юзернейм: @${user.username || '—'}`;
+                    }
+
                     // Показываем индикатор загрузки
                     const ordersContainer = document.getElementById('ordersList');
                     if (ordersContainer) {
