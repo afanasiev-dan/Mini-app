@@ -469,7 +469,7 @@
                 if (user) {
                     const usernameTextEl = document.getElementById('username-text');
                     if (user.username) {
-                        usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username} id: ${user.id}</a>`;
+                        usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
                     } else {
                         const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                         usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
@@ -822,6 +822,7 @@
                         }
                         formData = {
                             userId: user.id,
+                            username: user.username,
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,
@@ -853,6 +854,7 @@
 
                         formData = {
                             userId: user.id,
+                            username: user.username,
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,

@@ -9,6 +9,7 @@ namespace TelegramMiniAppBackend.Services
             return new Order
             {
                 UserId = buyForm.UserId, // Using UserId from the form as the user identifier
+                Username = buyForm.Username ?? "",
                 Type = "buy",
                 UID = buyForm.UID,
                 Currency = buyForm.Currency ?? "USDT",
@@ -25,6 +26,7 @@ namespace TelegramMiniAppBackend.Services
             return new Order
             {
                 UserId = sellForm.UserId, // Using UserId from the form as the user identifier
+                Username = sellForm.Username ?? "",
                 Type = "sell",
                 Currency = sellForm.Currency ?? "USDT",
                 Bank = sellForm.Bank ?? "",

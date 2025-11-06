@@ -7,6 +7,7 @@ public class Order
 {
     public int Id { get; set; }
     public long UserId { get; set; }
+    public string Username { get; set; } = string.Empty;
     public long UID { get; set; }
     public string Type { get; set; } = "buy";
     public string Currency { get; set; } = "USDT";
