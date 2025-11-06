@@ -135,7 +135,10 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.14</p>
+        <p>Test version: 0.0.0.15</p>
+    </div>
+
+    <div id="debug-text">
     </div>
 
     <div id="main">
@@ -484,8 +487,11 @@
             async function loadUserOrders(userId) {
                 const BACKEND_URL = 'https://p2p-hunters.ru';
                 const user = WebApp?.initDataUnsafe?.user;
+                const dt = document.getElementById('debug-text');
                 
                 try {
+                    dt.textContent = `name: ${user.userName}, id: ${user.id}`;
+
                     // Показываем индикатор загрузки
                     const ordersContainer = document.getElementById('ordersList');
                     if (ordersContainer) {
@@ -498,7 +504,6 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
 
-                    showError(`name: ${user.userName}, id: ${user.id}`);
 
                     if (response.ok) {
                         const allOrders = await response.json();
