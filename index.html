@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.21</p>
+        <p>Test version: 0.0.0.22</p>
         <p id="debug-text"></p>
     </div>
 
@@ -465,23 +465,17 @@
             async function updateProfile() {
                 const WebApp = window.Telegram?.WebApp;
                 const user = WebApp?.initDataUnsafe?.user;
-                const dt = document.getElementById('debug-text');
 
                 if (user) {
                     const usernameTextEl = document.getElementById('username-text');
                     if (user.username) {
                         usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username} id: ${user.id}</a>`;
-
-                        dt.innerText = '<p>⚠️Kek </p>';
                     } else {
                         const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                         usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
                     }
 
-                    // Загружаем ордера пользователя
-                    dt.innerText = '<p>до загрузки ордеров</p>';
                     await loadUserOrders(user.id);
-                    dt.innerText = '<p>после загрузки ордеров</p>';
                 } else {
                     // Пользователь не авторизован
                     const usernameTextEl = document.getElementById('username-text');
@@ -493,18 +487,8 @@
                 const BACKEND_URL = 'https://p2p-hunters.ru';
                 const WebApp = window.Telegram?.WebApp;
                 const user = WebApp?.initDataUnsafe?.user;
-                const dt = document.getElementById('debug-text');
-                dt.innerText = `<p>pop</p>`;
 
                 try {
-                    if (!dt) {
-                        dt.innerText = `<p>Элемент #debug-text не найден</p>`;
-                    } else if (!user) {
-                        dt.innerText = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
-                    } else {
-                        dt.innerText = `<p>ID: ${user.id}, Юзернейм: @${user.username || '—'}</p>`;
-                    }
-
                     // Показываем индикатор загрузки
                     const ordersContainer = document.getElementById('ordersList');
                     if (ordersContainer) {
@@ -587,6 +571,7 @@
                     case 'created': return 'status-active';
                     case 'in work': return 'status-inwork'; // добавим класс для "в работе"
                     case 'completed': return 'status-completed';
+                    case 'canceled': return 'Отменён';
                     default: return 'status-cancelled'; // для любого другого статуса
                 }
             }
@@ -642,7 +627,6 @@
             // Функции для отладки API
             async function testApi(testType) {
                 const BACKEND_URL = 'https://p2p-hunters.ru';
-                // const BACKEND_URL = 'http://localhost:5120'; // Для локальной отладки
 
                 try {
                     let response;
@@ -866,6 +850,7 @@
                             bank: bankValue,
                             amount: amount,
                             paymentUserData: paymentUserData,
+                            uid: '',
                             contactInfo: contactInfo
                         };
                     }
