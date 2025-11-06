@@ -95,20 +95,20 @@ public class OrderController : ControllerBase
         try
         {
             if (orderData.ValueKind != JsonValueKind.Object)
-                return "buy"; // If it's not an object, default to buy
+                return "Buy"; // If it's not an object, default to buy
 
             if (orderData.TryGetProperty("PaymentUserData", out _))
             {
-                return "sell";
+                return "Sell";
             }
         }
         catch
         {
             // If there's an issue accessing properties, default to buy
-            return "buy";
+            return "Buy";
         }
 
-        return "buy";
+        return "Buy";
     }
 
     // Endpoint to update order status
