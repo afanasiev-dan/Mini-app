@@ -813,7 +813,7 @@
 
                         formData = {
                             userId: user.id,
-                            userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
+                            // userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,
@@ -845,12 +845,11 @@
 
                         formData = {
                             userId: user.id,
-                            userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
+                            // userName: user.username || (user.first_name + (user.last_name ? ' ' + user.last_name : '')),
                             currency: currencyValue,
                             bank: bankValue,
                             amount: amount,
                             paymentUserData: paymentUserData,
-                            uid: '',
                             contactInfo: contactInfo
                         };
                     }
