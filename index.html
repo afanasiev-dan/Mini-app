@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.18</p>
+        <p>Test version: 0.0.0.19</p>
     </div>
 
     <!-- Debug element removed to clean up interface -->
@@ -468,7 +468,7 @@
                 if (user) {
                     const usernameTextEl = document.getElementById('username-text');
                     if (user.username) {
-                        usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
+                        usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username} id: ${user.id}</a>`;
                     } else {
                         const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
                         usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
