@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.19</p>
+        <p>Test version: 0.0.0.20</p>
     </div>
 
     <!-- Debug element removed to clean up interface -->
@@ -504,7 +504,7 @@
                     }
 
                     // Получаем ордера пользователя по userId
-                    const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${userId}/last-day`, {
+                    const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${user.id}/last-day`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
