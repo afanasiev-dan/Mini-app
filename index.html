@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.13</p>
+        <p>Test version: 0.0.0.14</p>
     </div>
 
     <div id="main">
@@ -493,10 +493,12 @@
                     }
 
                     // Получаем все ордера
-                    const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${user.id}/last-day`, {
+                    const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${user.userName}/last-day`, {
                         method: 'GET',
                         headers: { 'Content-Type': 'application/json' }
                     });
+
+                    showError(`name: ${user.userName}, id: ${user.id}`);
 
                     if (response.ok) {
                         const allOrders = await response.json();
