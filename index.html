@@ -513,16 +513,16 @@
 
 
                     if (response.ok) {
-                        const allOrders = await response.json();
+                        const orders = await response.json();
                         // Фильтруем ордера по userId
-                        const userOrders = allOrders.filter(order => {
-                            // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
-                            return order.userId == userId;
-                        });
-                        // Сортируем по дате создания (новые первыми)
-                        userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                        // const userOrders = allOrders.filter(order => {
+                        //     // В зависимости от структуры данных на бэкенде, userId может быть как числом, так и строкой
+                        //     return order.userId == userId;
+                        // });
+                        // // Сортируем по дате создания (новые первыми)
+                        // userOrders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-                        displayUserOrders(userOrders);
+                        displayUserOrders(orders);
                     } else {
                         const errorText = await response.text();
                         showError('Ошибка при загрузке ордеров: ' + errorText);
