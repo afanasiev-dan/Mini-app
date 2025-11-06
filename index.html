@@ -498,7 +498,7 @@
                     } else if (!user) {
                         dt.innerText = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
                     } else {
-                        dt.innerText = `<p>ID: ${user.id}, Имя: ${user.first_name}, Юзернейм: @${user.username || '—'}`;
+                        dt.innerText = `<p>ID: ${user.id}, Юзернейм: @${user.username || '—'}</p>`;
                     }
 
                     // Показываем индикатор загрузки
