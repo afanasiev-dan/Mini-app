@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.20</p>
+        <p>Test version: 0.0.0.21</p>
         <p id="debug-text"></p>
     </div>
 
@@ -494,7 +494,7 @@
 
                 try {
                     if (!dt) {
-                        console.error('Элемент #debug-text не найден');
+                        dt.innerText = `<p>Элемент #debug-text не найден</p>`;
                     } else if (!user) {
                         dt.innerText = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
                     } else {
