@@ -135,7 +135,7 @@
 
 <body>
     <div>
-        <p>Test version: 0.0.0.17</p>
+        <p>Test version: 0.0.0.18</p>
     </div>
 
     <div id="debug-text">
@@ -494,9 +494,9 @@
                     if (!dt) {
                         console.error('Элемент #debug-text не найден');
                     } else if (!user) {
-                        dt.textContent = '⚠️ Пользователь не авторизован / WebApp не инициализирован';
+                        dt.innerHTML = '<p>⚠️ Пользователь не авторизован / WebApp не инициализирован</p>';
                     } else {
-                        dt.textContent = `ID: ${user.id}, Имя: ${user.first_name}, Юзернейм: @${user.username || '—'}`;
+                        dt.innerHTML = `<p>ID: ${user.id}, Имя: ${user.first_name}, Юзернейм: @${user.username || '—'}`;
                     }
 
                     // Показываем индикатор загрузки
