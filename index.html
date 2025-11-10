@@ -782,7 +782,8 @@
         const currencySelect = screen.querySelectorAll('.bank-select')[0];
         const bankSelect = screen.querySelectorAll('.bank-select')[1];
         const inputs = screen.querySelectorAll('input');
-        const sumType = screen.querySelectorAll('.currency-select')?.value || 'RUB'; 
+        const currencySelect = screen.querySelector('.currency-select');
+        const amountCurrency = currencySelect?.value || 'RUB';
 
         // Извлекаем значения из селектов (значения, а не индексы)
         const currencyValue = currencySelect.value || 'USDT';
@@ -847,7 +848,7 @@
             userId: user.id,
             username: user.username,
             currency: currencyValue,
-            currencyPaymentType : sumType,
+            currencyPaymentType: amountCurrency ,
             bank: bankValue,
             amount: amount,
             uid: uidValue || '',
@@ -880,7 +881,7 @@
             userId: user.id,
             username: user.username,
             currency: currencyValue,
-            currencyPaymentType : sumType,
+            currencyPaymentType: amountCurrency,
             bank: bankValue,
             amount: amount,
             paymentUserData: paymentUserData,
