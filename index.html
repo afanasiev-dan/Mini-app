@@ -782,8 +782,8 @@
         const currencySelect = screen.querySelectorAll('.bank-select')[0];
         const bankSelect = screen.querySelectorAll('.bank-select')[1];
         const inputs = screen.querySelectorAll('input');
-        const currencySelect = screen.querySelector('.currency-select');
-        const amountCurrency = currencySelect?.value || 'RUB';
+        const currencyPaymentTypeSelect = screen.querySelector('.currency-select');
+        const amountCurrency = currencyPaymentTypeSelect?.value || 'RUB';
 
         // Извлекаем значения из селектов (значения, а не индексы)
         const currencyValue = currencySelect.value || 'USDT';
