@@ -209,7 +209,7 @@ public class OrderController : ControllerBase
     }
 
     [HttpGet("orders/user/{id}/last-day")]
-    public async Task<IActionResult> GetLastDayOrdersByTelegramId(int id)
+    public async Task<IActionResult> GetLastDayOrdersByTelegramId(long id)
     {
         try
         {

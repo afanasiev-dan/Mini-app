@@ -5,6 +5,7 @@ public class OrderSellForm
     public long UserId { get; set; }
     public string Username { get; set; } = string.Empty;
     public string Currency { get; set; } = "USDT";
+    public string CurrencyPaymentType { get; set; } = "RUB";
     public string Bank { get; set; } = "";
     public decimal Amount { get; set; }
     public string PaymentUserData { get; set; } = "";

@@ -11,6 +11,7 @@ public class Order
     public long UID { get; set; }
     public string Type { get; set; } = "buy";
     public string Currency { get; set; } = "USDT";
+    public string CurrencyPaymentType { get; set; } = "RUB";
     public string Bank { get; set; } = "";
     public decimal Amount { get; set; }
     public string ContactInfo { get; set; } = "";
@@ -19,4 +20,11 @@ public class Order
     public bool Sync { get; set; } = false;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? ChangeAt { get; set; }
+}
+
+
+public static class CurrencyPaymentType
+{
+    public static string RUB = "RUB";
+    public static string USD = "USD";
 }
