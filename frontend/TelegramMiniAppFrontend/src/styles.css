@@ -15,7 +15,7 @@ body {
   height: 96px;
   border-radius: 36px;
   border: 1px solid #acb0a0;
-  background-color: #2E3239;
+  background-color: #1c1f26;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,13 +23,14 @@ body {
 }
 
 .card-choice {
-  border-radius: 18px;
+  border-radius: 18px !important;
   cursor: pointer;
   width: 196px;
   height: 196px;
   transition: transform 0.2s ease;
-  background-color: #2E3239;
-  color: white;
+  background-color: #1c1f26 !important;
+  color: white !important;
+  border: 1px solid #acb0a0;
 }
 
 .card-choice:hover {
@@ -164,4 +165,12 @@ textarea::placeholder {
 option {
   background-color: #2E3239;
   color: white;
+}
+
+/* Общий класс для центрирования страницы */
+.page-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

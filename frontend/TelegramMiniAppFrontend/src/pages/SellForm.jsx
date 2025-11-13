@@ -34,7 +34,7 @@ export default function SellForm() {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center min-vh-100">
+    <div className="container py-5 text-light min-vh-100 d-flex justify-content-center align-items-center">
       <div className="card bg-dark text-light" style={{ maxWidth: 400 }}>
         <div className="card-body">
           <h5 className="card-title text-center mb-4">Создание заявки на продажу</h5>

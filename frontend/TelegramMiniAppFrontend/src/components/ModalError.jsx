@@ -11,7 +11,7 @@ export default function ModalError() {
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} centered>
+    <Modal className="bg-dark" show={show} onHide={() => setShow(false)} centered>
       <Modal.Header closeButton>
         <Modal.Title>Ошибка</Modal.Title>
       </Modal.Header>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUserOrders } from "../services/api.js";
+import { getUserOrders } from "../services/api";
 import useTelegram from "../hooks/useTelegram";
 
 export default function Profile() {
@@ -30,7 +30,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="container py-5 text-light">
+    <div className="container py-5 text-light min-vh-100 d-flex justify-content-center align-items-center">
       <div className="card bg-dark mx-auto" style={{ maxWidth: 500 }}>
         <div className="card-body">
           <h5 className="text-center mb-4">Личный кабинет</h5>

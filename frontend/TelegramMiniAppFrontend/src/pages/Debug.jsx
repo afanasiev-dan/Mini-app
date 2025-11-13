@@ -18,7 +18,7 @@ export default function Debug() {
   };
 
   return (
-    <div className="container py-5 text-light">
+    <div className="container py-5 text-light min-vh-100 d-flex justify-content-center align-items-center">
       <div className="card bg-dark mx-auto" style={{ maxWidth: 500 }}>
         <div className="card-body">
           <h5 className="text-center mb-4">Отладка API</h5>
