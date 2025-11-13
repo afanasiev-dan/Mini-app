@@ -1,0 +1,167 @@
+body {
+  background-color: #1c1f25;
+  color: white;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.icon-lg {
+  font-size: 48px;
+  color: white;
+}
+
+.icon-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 36px;
+  border: 1px solid #acb0a0;
+  background-color: #2E3239;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.25s ease;
+}
+
+.card-choice {
+  border-radius: 18px;
+  cursor: pointer;
+  width: 196px;
+  height: 196px;
+  transition: transform 0.2s ease;
+  background-color: #2E3239;
+  color: white;
+}
+
+.card-choice:hover {
+  transform: scale(1.05);
+}
+
+.card-buy:hover .icon-wrapper {
+  background-color: #4C8742;
+}
+
+.card-sell:hover .icon-wrapper {
+  background-color: #9B3333;
+}
+
+.card-profile:hover .icon-wrapper {
+  background-color: #3A5BA0;
+}
+
+.order-item {
+  border-left: 4px solid #6c757d;
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
+.status-active {
+  border-left-color: #198754;
+}
+.status-inwork {
+  border-left-color: #ffc107;
+}
+.status-completed {
+  border-left-color: #0dcaf0;
+}
+.status-cancelled {
+  border-left-color: #dc3545;
+}
+
+/* Стили для тёмной темы Bootstrap компонентов */
+.form-control,
+.form-select {
+  background-color: #2E3239;
+  color: white;
+  border: 1px solid #444;
+}
+
+.form-control::placeholder,
+.form-select::placeholder {
+  color: #adb5bd;
+  opacity: 0.7;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #3a3d45;
+  color: white;
+  border-color: #6c757d;
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+.form-label {
+  color: white;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.card {
+  background-color: #2E3239;
+  color: white;
+  border: 1px solid #444;
+}
+
+.card-body {
+  color: white;
+}
+
+.text-muted {
+  color: #adb5bd !important;
+}
+
+.text-light {
+  color: white !important;
+}
+
+.text-dark {
+  color: #f8f9fa !important;
+}
+
+.bg-light {
+  background-color: #2E3239 !important;
+}
+
+.bg-dark {
+  background-color: #1c1f25 !important;
+}
+
+/* Исправление для элементов внутри input и form */
+input,
+select,
+textarea {
+  color: white;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #adb5bd;
+  opacity: 0.7;
+}
+
+option {
+  background-color: #2E3239;
+  color: white;
+}

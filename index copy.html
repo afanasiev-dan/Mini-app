@@ -1,0 +1,1014 @@
+<head>
+  <html lang="ru" data-bs-theme="dark">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мой интерфейс</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    /* Центрирование */
+    #main {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    /* Анимации */
+    .screen {
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    .screen.fade-out {
+      opacity: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Стили карточек выбора */
+    .icon-lg {
+      font-size: 48px;
+      color: white;
+    }
+
+    .icon-wrapper {
+      width: 96px;
+      height: 96px;
+      border-radius: 36px;
+      border: 1px solid #acb0a0;
+      background-color: #2E3239;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.25s ease;
+    }
+
+    /* .card {
+    background: rgba(30, 30, 35, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    } */
+    .card-choice {
+      border-radius: 18px;
+      cursor: pointer;
+      width: 196px;
+      height: 196px;
+      transition: transform 0.2s ease;
+    }
+
+    .card-choice:hover {
+      transform: scale(1.05);
+      background-color: #292C33;
+    }
+
+    .card-buy:hover .icon-wrapper {
+      background-color: #4C8742;
+      transform: scale(1.05);
+      border-radius: 48px;
+    }
+
+    .card-sell:hover .icon-wrapper {
+      background-color: #9B3333;
+      transform: scale(1.05);
+      border-radius: 48px;
+    }
+
+    .card-profile:hover .icon-wrapper {
+      background-color: #3A5BA0;
+      transform: scale(1.05);
+      border-radius: 48px;
+    }
+
+    /* Стили для ордеров */
+    .order-item {
+      border-left: 4px solid #6c757d;
+      padding-left: 12px;
+      margin-bottom: 12px;
+    }
+
+    .start-width-column {
+      width: 400px;
+    }
+
+    .order-item.status-active {
+      border-left-color: #198754;
+    }
+
+    .order-item.status-inwork {
+      border-left-color: #ffc107;
+    }
+
+    .order-item.status-completed {
+      border-left-color: #0dcaf0;
+    }
+
+    .order-item.status-cancelled {
+      border-left-color: #dc3545;
+    }
+  </style>
+</head>
+
+<p>test ver</p>
+
+<!-- Модальное окно ошибки -->
+<div id="errorModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Ошибка</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <textarea id="errorText" class="form-control" rows="5" readonly></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        <button type="button" class="btn btn-primary" onclick="copyError()">Копировать</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<body>
+  <!-- <div>
+<p>Test version: 0.0.0.22</p>
+<p id="debug-text"></p>
+</div> -->
+
+  <!-- Debug element removed to clean up interface -->
+
+  <div id="main">
+    <!-- Экран выбора -->
+    <div id="selectionBlock" class="screen hidden">
+      <div class="d-flex flex-wrap gap-4 justify-content-center">
+        <div class="card card-choice card-buy" onclick="navigateTo('buy')">
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-currency-dollar icon-lg"></i>
+            </div>
+            <span>Покупка</span>
+          </div>
+        </div>
+
+        <div class="card card-choice card-sell" onclick="navigateTo('sell')">
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-cash icon-lg"></i>
+            </div>
+            <span>Продажа</span>
+          </div>
+        </div>
+
+        <div class="card card-choice card-profile" onclick="navigateTo('profile')">
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <div class="icon-wrapper mb-3">
+              <i class="bi bi-person-circle icon-lg"></i>
+            </div>
+            <span>Личный кабинет</span>
+          </div>
+        </div>
+
+        <!-- <div class="card card-choice card-profile" onclick="navigateTo('debug')">
+<div class="card-body d-flex flex-column align-items-center justify-content-center">
+<div class="icon-wrapper mb-3">
+<i class="bi bi-gear icon-lg"></i>
+</div>
+<span>Тестировать</span>
+</div>
+</div> -->
+      </div>
+    </div>
+
+    <!-- Форма покупки -->
+    <div id="buyForm" class="screen hidden start-width-column">
+      <div class="card" style="max-width: 400px;">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4">Создание заявки на покупку</h5>
+          <select class="form-select mb-3 bank-select">
+            <option selected value="">Выберите валюту</option>
+            <option value="USDT">USDT</option>
+            <option value="USDC">USDC</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+          </select>
+
+          <select class="form-select mb-3 bank-select">
+            <option selected value="">Выберите банк</option>
+            <option value="Т-Банк">Т-Банк</option>
+            <option value="Совкомбанк">Совкомбанк</option>
+            <option value="ПСБ банк">ПСБ банк</option>
+          </select>
+
+          <div class="mb-3 col">
+            <label class="form-label">Bybit UID</label>
+            <input type="number" class="form-control uid-input" placeholder="666666" min="100000" max="9999999999">
+          </div>
+
+          <label class="form-label">Сумма</label>
+          <div class="row g-2 mb-3">
+            <div class="col">
+              <input type="number" class="form-control sum-input" placeholder="5000">
+            </div>
+            <div class="col-auto" style="max-width: 96px">
+              <select class="form-select currency-select">
+                <option value="RUB" selected>₽</option>
+                <option value="USD">$</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Имя отправителя</label>
+            <input type="text" class="form-control" placeholder="Вася Криптовалютов" />
+          </div>
+          <button class="btn btn-primary w-100 mt-3" onclick="submitForm('buy')">Создать заявку</button>
+          <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Форма продажи -->
+    <div id="sellForm" class="screen hidden start-width-column">
+      <div class="card" style="max-width: 400px;">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4">Создание заявки на продажу</h5>
+
+          <select class="form-select mb-3 bank-select">
+            <option selected value="">Выберите валюту</option>
+            <option value="USDT">USDT</option>
+            <option value="USDC">USDC</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+          </select>
+
+          <select class="form-select mb-3 bank-select">
+            <option selected value="">Выберите банк</option>
+            <option value="Т-Банк">Т-Банк</option>
+            <option value="Совкомбанк">Совкомбанк</option>
+            <option value="ПСБ банк">ПСБ банк</option>
+          </select>
+
+          <label class="form-label">Сумма</label>
+          <div class="row g-2 mb-3">
+            <div class="col">
+              <input type="number" class="form-control sum-input" placeholder="5000">
+            </div>
+            <div class="col-auto" style="max-width: 96px">
+              <select class="form-select currency-select">
+                <option value="RUB" selected>₽</option>
+                <option value="USD">$</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="mb-3"> -->
+          <!--     <label class="form-label">Сумма</label> -->
+          <!--     <input type="number" class="form-control sum-input" placeholder="0,252"> -->
+          <!-- </div> -->
+
+          <div class="mb-3">
+            <label class="form-label">Номер телефона или карты</label>
+            <input type="text" class="form-control contact-input" placeholder="89993331111" inputmode="numeric">
+          </div>
+          <div>
+            <label class="form-label">ФИО получателя</label>
+            <input type="text" class="form-control" placeholder="Вася Криптовалютов">
+          </div>
+          <button class="btn btn-primary w-100 mt-3" onclick="submitForm('sell')">Создать заявку</button>
+          <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Личный кабинет -->
+    <div id="profileBlock" class="screen hidden start-width-column">
+      <div class="card" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4">Ордера за последние 24 часа</h5>
+
+          <div class="mb-3">
+            <p id="telegram-username"><strong>Telegram:</strong> <span id="username-text">Загрузка...</span>
+            </p>
+          </div>
+
+          <div id="adress-wallet" class="mb-3">
+            <h6>Ордера за последние 24 часа:</h6>
+
+            <div class="text-muted" style="font-size: 0.875rem;">
+              Всего: <span id="ordersCount">0</span> ордеров
+            </div>
+
+            <div id="ordersList" class="mt-3">
+              <!-- Ордера будут загружаться сюда -->
+            </div>
+
+          </div>
+          <div class="mt-3">
+            <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('debug')">Отладка
+              API</button>
+            <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">←
+              Назад</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Отладочный экран -->
+    <div id="debugBlock" class="screen hidden start-width-column">
+      <div class="card" style="max-width: 500px; width: 100%;">
+        <div class="card-body">
+          <h5 class="card-title text-center mb-4">Отладка API</h5>
+
+          <div class="mb-3">
+            <label class="form-label">Telegram ID</label>
+            <input type="text" id="debugUserId" class="form-control" placeholder="123456789" value="123456789">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">ID заказа (для операций с конкретным заказом)</label>
+            <input type="text" id="debugOrderId" class="form-control" placeholder="1" value="1">
+          </div>
+
+          <!-- Кнопки для тестирования API -->
+          <div class="row mb-2">
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('getClient')">Получить
+                клиента</button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('checkClientExists')">Проверить
+                клиента</button>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('getAllOrders')">Все заказы</button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('getUserOrders')">Заказы
+                пользователя</button>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('getOrderById')">Заказ по ID</button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-primary w-100" onclick="testApi('healthCheck')">Проверка
+                сервера</button>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-6">
+              <button class="btn btn-success w-100" onclick="testApi('createBuyOrder')">Создать buy
+                заказ</button>
+            </div>
+            <div class="col-6">
+              <button class="btn btn-success w-100" onclick="testApi('createSellOrder')">Создать sell
+                заказ</button>
+            </div>
+          </div>
+
+
+          <div class="row mb-2">
+            <div class="col-6">
+              <button class="btn btn-success w-100" onclick="testApi('clientCreate')">Создать клиента</button>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <button class="btn btn-warning w-100" onclick="testApi('updateOrderStatus')">Обновить
+                статус</button>
+            </div>
+            <div class="col-6">
+              <select id="debugStatusSelect" class="form-select">
+                <option value="created">created</option>
+                <option value="in work">in work</option>
+                <option value="completed">completed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Блок для отображения результатов -->
+          <div class="card bg-dark">
+            <div class="card-body">
+              <h6 class="card-title">Результаты:</h6>
+              <pre id="debugOutput" class="text-start"
+                style="max-height: 200px; overflow-y: auto; background-color: #2E3239; padding: 10px; border-radius: 4px; white-space: pre-wrap;">Здесь будут отображаться результаты тестов API...</pre>
+            </div>
+          </div>
+
+          <button class="btn btn-outline-secondary w-100 mt-3" onclick="navigateTo('back')">← Назад</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentScreen = 'debugBlock';
+
+      let errorModalInstance = null;
+
+      function showError(message) {
+        const errorText = document.getElementById('errorText');
+        errorText.value = message;
+
+        if (!errorModalInstance) {
+          const modalEl = document.getElementById('errorModal');
+          errorModalInstance = new bootstrap.Modal(modalEl);
+        }
+        errorModalInstance.show();
+      }
+
+      function copyError() {
+        const errorText = document.getElementById('errorText');
+        errorText.select();
+        document.execCommand('copy');
+        alert('Текст ошибки скопирован!');
+      }
+
+      function navigateTo(target) {
+        const screens = ['selectionBlock', 'buyForm', 'sellForm', 'profileBlock', 'debugBlock'];
+
+        const currentEl = document.getElementById(currentScreen);
+        currentEl.classList.add('fade-out');
+
+        setTimeout(() => {
+          currentEl.classList.add('hidden');
+          currentEl.classList.remove('fade-out');
+
+          // Clear the current screen's form fields when navigating away
+          if (currentScreen === 'buyForm' || currentScreen === 'sellForm') {
+            clearFormFields(currentScreen);
+          }
+
+          if (target === 'back') {
+            document.getElementById('selectionBlock').classList.remove('hidden');
+            currentScreen = 'selectionBlock';
+          } else if (target === 'debug') {
+            document.getElementById('debugBlock').classList.remove('hidden');
+            currentScreen = 'debugBlock';
+          } else {
+            const screenId = target === 'profile' ? 'profileBlock' : target + 'Form';
+            document.getElementById(screenId).classList.remove('hidden');
+            currentScreen = screenId;
+
+            // 👇 Обновляем данные профиля, если открываем его
+            if (target === 'profile') {
+              updateProfile();
+            }
+          }
+        }, 400);
+      }
+
+      function clearFormFields(screenId) {
+        const screen = document.getElementById(screenId);
+        if (!screen) return;
+
+        // Reset all select elements to their default (first) option
+        const selects = screen.querySelectorAll('.bank-select');
+        selects.forEach(select => {
+          select.selectedIndex = 0;
+        });
+
+        // Clear all input fields
+        const inputs = screen.querySelectorAll('input');
+        inputs.forEach(input => {
+          if (input.type === 'number') {
+            input.value = '';
+          } else {
+            input.value = '';
+          }
+        });
+      }
+
+      async function updateProfile() {
+        const WebApp = window.Telegram?.WebApp;
+        const user = WebApp?.initDataUnsafe?.user;
+
+        if (user) {
+          const usernameTextEl = document.getElementById('username-text');
+          if (user.username) {
+            usernameTextEl.innerHTML = `<a href="https://t.me/${user.username}" target="_blank">@${user.username}</a>`;
+          } else {
+            const fullName = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+            usernameTextEl.innerHTML = `${fullName} (ID: ${user.id})`;
+          }
+
+          await loadUserOrders(user.id);
+        } else {
+          // Пользователь не авторизован
+          const usernameTextEl = document.getElementById('username-text');
+          usernameTextEl.textContent = 'не авторизован';
+        }
+      }
+
+      async function loadUserOrders(userId) {
+        const BACKEND_URL = 'http://localhost:5120';
+        const WebApp = window.Telegram?.WebApp;
+        const user = WebApp?.initDataUnsafe?.user;
+
+        try {
+          // Показываем индикатор загрузки
+          const ordersContainer = document.getElementById('ordersList');
+          if (ordersContainer) {
+            ordersContainer.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Загрузка...</span></div></div>';
+          }
+
+          // Получаем ордера пользователя по userId
+          const response = await fetch(`${BACKEND_URL}/api/Order/orders/user/${user.id}/last-day`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+
+          if (response.ok) {
+            const orders = await response.json();
+            // Сортируем по дате создания (новые первыми)
+            orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            displayUserOrders(orders);
+          } else {
+            const errorText = await response.text();
+            showError('Ошибка при загрузке ордеров: ' + errorText);
+            // Показываем сообщение об ошибке в списке ордеров
+            if (ordersContainer) {
+              ordersContainer.innerHTML = '<div class="text-danger text-center">Ошибка загрузки ордеров</div>';
+            }
+          }
+        } catch (e) {
+          showError('Ошибка сети при загрузке ордеров: ' + e.message);
+          // Показываем сообщение об ошибке в списке ордеров
+          const ordersContainer = document.getElementById('ordersList');
+          if (ordersContainer) {
+            ordersContainer.innerHTML = '<div class="text-danger text-center">Ошибка подключения к серверу</div>';
+          }
+        }
+      }
+
+      function displayUserOrders(orders) {
+        const ordersContainer = document.getElementById('ordersList');
+        const ordersCountElement = document.getElementById('ordersCount');
+
+        if (!ordersContainer || !ordersCountElement) return;
+
+        // Обновляем общее количество ордеров
+        ordersCountElement.textContent = `${orders.length} ${getPluralForm(orders.length)}`;
+
+        // Очищаем контейнер
+        ordersContainer.innerHTML = '';
+
+        if (orders.length === 0) {
+          ordersContainer.innerHTML = '<div class="text-muted">Нет активных ордеров</div>';
+          return;
+        }
+
+        // Создаем элементы для каждого ордера
+        orders.forEach(order => {
+          const orderElement = document.createElement('div');
+          orderElement.className = `order-item ${getOrderStatusClass(order.status)}`;
+
+          const orderTypeText = order.type === 'buy' ? 'Покупка' : 'Продажа';
+          // Проверяем, является ли amount числом, и форматируем его соответствующим образом
+          const orderAmount = typeof order.amount === 'number' ?
+            `${order.amount.toLocaleString('ru-RU', { maximumFractionDigits: 8 })} RUB` :
+            `RUB`;
+
+          orderElement.innerHTML = `
+<div><strong>${orderTypeText}</strong> — ${orderAmount}</div>
+<div class="d-flex justify-content-between">
+  <small>${getOrderStatusText(order.status)}</small>
+  <small class="text-muted">${formatDate(order.createdAt)}</small>
+</div>
+`;
+
+          ordersContainer.appendChild(orderElement);
+        });
+      }
+
+      function getOrderStatusClass(status) {
+        switch (status) {
+          case 'created': return 'status-active';
+          case 'in work': return 'status-inwork'; // добавим класс для "в работе"
+          case 'completed': return 'status-completed';
+          case 'canceled': return 'Отменён';
+          default: return 'status-cancelled'; // для любого другого статуса
+        }
+      }
+
+      function getOrderStatusText(status) {
+        switch (status) {
+          case 'created': return 'Активен';
+          case 'in work': return 'В работе';
+          case 'completed': return 'Завершён';
+          case 'canceled': return 'Отменён';
+          default: return status; // для других статусов просто отображаем как есть
+        }
+      }
+
+      function getPluralForm(count) {
+        const lastDigit = count % 10;
+        const lastTwoDigits = count % 100;
+
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+          return 'ов';
+        }
+
+        if (lastDigit === 1) {
+          return '';
+        } else if (lastDigit >= 2 && lastDigit <= 4) {
+          return 'а';
+        } else {
+          return 'ов';
+        }
+      }
+
+      function getSelectValueByIndex(selectElement) {
+        const selectedIndex = selectElement.selectedIndex;
+        if (selectedIndex >= 0) {
+          const selectedOption = selectElement.options[selectedIndex];
+          // Используем value если оно есть, иначе текст
+          return selectedOption.value !== '' ? selectedOption.value : selectedOption.text;
+        }
+        return null;
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('ru-RU', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      // Функции для отладки API
+      async function testApi(testType) {
+        const BACKEND_URL = 'http://localhost:5120';
+
+        try {
+          let response;
+          let url;
+          let method = 'GET';
+          let body = null;
+          let headers = { 'Content-Type': 'application/json' };
+
+          const userId = document.getElementById('debugUserId').value || '123456789';
+          const orderId = document.getElementById('debugOrderId').value || '1';
+          const status = document.getElementById('debugStatusSelect').value;
+
+          switch (testType) {
+            case 'healthCheck':
+              url = `${BACKEND_URL}/live`;
+              break;
+
+            case 'getClient':
+              url = `${BACKEND_URL}/api/Client/${userId}`;
+              break;
+
+            case 'checkClientExists':
+              url = `${BACKEND_URL}/api/Client/exists/${userId}`;
+              break;
+
+            case 'getAllOrders':
+              url = `${BACKEND_URL}/api/Order`;
+              break;
+
+            case 'getUserOrders':
+              url = `${BACKEND_URL}/api/Order`;
+              break;
+
+            case 'getOrderById':
+              url = `${BACKEND_URL}/api/Order/${orderId}`;
+              break;
+
+            case 'createBuyOrder':
+              url = `${BACKEND_URL}/api/Order/buy_order`;
+              method = 'POST';
+              body = {
+                userId: parseInt(userId) || '123456789',
+                userName: "debug_user",
+                currency: "USDT",
+                bank: "Т-Банк",
+                amount: 100.50,
+                contactInfo: "Тестовый пользователь, 89991234567"
+              };
+              break;
+
+            case 'createSellOrder':
+              url = `${BACKEND_URL}/api/Order/sell_order`;
+              method = 'POST';
+              body = {
+                userId: parseInt(userId) || 123456789,
+                userName: "debug_user",
+                currency: "USDT",
+                bank: "Т-Банк",
+                amount: 50.25,
+                paymentUserData: "4276123456789012",
+                contactInfo: "Тестовый пользователь"
+              };
+              break;
+
+            case 'clientCreate':
+              console.info('клиент создаётся');
+              url = `${BACKEND_URL}/api/Client/client`;
+              method = 'POST';
+              body = {
+                telegramId: parseInt(userId) || 123456789, 
+                username: "debug_user", 
+                fullName: "Тестовый пользователь" };
+              break;
+
+            case 'updateOrderStatus':
+              url = `${BACKEND_URL}/api/Order/order/${orderId}/status`;
+              method = 'PUT';
+              body = { status: status };
+              break;
+
+            default:
+              throw new Error('Неизвестный тип теста: ' + testType);
+          }
+
+          // Показываем информацию о запросе
+          const requestInfo = `Запрос: ${method} ${url}\n`;
+          const requestBody = body ? `Тело: ${JSON.stringify(body, null, 2)}\n` : '';
+          updateDebugOutput(requestInfo + requestBody + 'Отправка запроса...\n');
+
+          response = await fetch(url, {
+            method: method,
+            headers: headers,
+            body: body ? JSON.stringify(body) : null
+          });
+          
+          console.info(response);
+
+
+          let result;
+          if (response.headers.get('content-type')?.includes('application/json')) {
+            result = await response.json();
+          } else {
+            result = await response.text();
+          }
+
+          const responseInfo = `\nОтвет ${response.status}: ${response.statusText}\n`;
+          const resultText = `Результат: ${JSON.stringify(result, null, 2)}`;
+
+          updateDebugOutput(requestInfo + requestBody + responseInfo + resultText);
+
+        } catch (error) {
+          const errorInfo = `Ошибка: ${error.message}`;
+          updateDebugOutput(errorInfo);
+          console.error('Ошибка при тестировании API:', error);
+        }
+      }
+
+      function updateDebugOutput(text) {
+        const outputElement = document.getElementById('debugOutput');
+        outputElement.textContent = text;
+
+        // Прокручиваем до конца
+        outputElement.scrollTop = outputElement.scrollHeight;
+      }
+
+      async function submitForm(type) {
+        const WebApp = window.Telegram?.WebApp;
+        const user = WebApp?.initDataUnsafe?.user;
+
+        // if (!user) {
+        //   showError("Пользователь не определён");
+        //   return;
+        // }
+
+        // Находим и отключаем кнопку "Создать заявку"
+        const submitButton = document.querySelector(`#${currentScreen} .btn-primary:not(.btn-outline-secondary)`);
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.textContent = 'Отправка...';
+        }
+
+        try {
+          // Сбор данных с формы
+          const screen = document.getElementById(currentScreen);
+          const currencySelect = screen.querySelectorAll('.bank-select')[0];
+          const bankSelect = screen.querySelectorAll('.bank-select')[1];
+          const inputs = screen.querySelectorAll('input');
+          const currencyPaymentTypeSelect = screen.querySelector('.currency-select');
+          const amountCurrency = currenPaymentTypecySelect?.value || 'RUB';
+
+          // Извлекаем значения из селектов (значения, а не индексы)
+          const currencyValue = currencySelect.value || 'USDT';
+          const bankValue = bankSelect.value || 'Т-Банк';
+
+          // Валидация данных
+          if (!currencyValue) {
+            showError("Пожалуйста, выберите валюту");
+            // Восстанавливаем кнопку
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = 'Создать заявку';
+            }
+            return;
+          }
+
+          if (!bankValue) {
+            showError("Пожалуйста, выберите банк");
+            // Восстанавливаем кнопку
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = 'Создать заявку';
+            }
+            return;
+          }
+
+          const amount = parseFloat(inputs[1]?.value);
+          if (isNaN(amount) || amount <= 0) {
+            showError("Пожалуйста, введите корректную сумму");
+            // Восстанавливаем кнопку
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = 'Создать заявку';
+            }
+            return;
+          }
+
+          let userId = 123456789;
+
+          let formData;
+          if (type === 'buy') {
+            const contactInfo = inputs[1]?.value || '';
+            if (!contactInfo.trim()) {
+              showError("Пожалуйста, укажите контактную информацию");
+              // Восстанавливаем кнопку
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+              }
+              return;
+            }
+
+            const uidValue = screen.querySelector('.uid-input').value;
+            if (!uidValue.trim()) {
+              showError("Пожалуйста, укажите UID");
+              // Восстанавливаем кнопку
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+              }
+              return;
+            }
+            formData = {
+              userId: userId,
+              username: user.username,
+              currency: currencyValue,
+              currencyPaymentType: amountCurrency,
+              bank: bankValue,
+              amount: amount,
+              uid: uidValue || '',
+              contactInfo: contactInfo
+            };
+          } else if (type === 'sell') {
+            const paymentUserData = inputs[1]?.value || '';
+            if (!paymentUserData.trim()) {
+              showError("Пожалуйста, укажите данные для оплаты");
+              // Восстанавливаем кнопку
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+              }
+              return;
+            }
+
+            const contactInfo = inputs[2]?.value || '';
+            if (!contactInfo.trim()) {
+              showError("Пожалуйста, укажите контактную информацию");
+              // Восстанавливаем кнопку
+              if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Создать заявку';
+              }
+              return;
+            }
+
+            formData = {
+              userId: userId,
+              username: user.username,
+              currency: currencyValue,
+              currencyPaymentType: amountCurrency,
+              bank: bankValue,
+              amount: amount,
+              paymentUserData: paymentUserData,
+              contactInfo: contactInfo
+            };
+          }
+
+          const BACKEND_URL = 'http://localhost:5120';
+
+          const endpoint = type === 'buy' ? '/api/Order/buy_order' : '/api/Order/sell_order';
+
+          const response = await fetch(`${BACKEND_URL}${endpoint}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+
+          console.info(response);
+
+          if (response.ok) {
+            alert('Заявка создана!');
+            // Clear the form before navigating back
+            clearFormFields(currentScreen);
+            navigateTo('back');
+          } else {
+            const errorText = await response.text();
+            showError('Ошибка при создании заявки: ' + errorText);
+            // Восстанавливаем кнопку
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = 'Создать заявку';
+            }
+          }
+        } catch (e) {
+          showError('Ошибка сети: ' + e.message);
+          // Восстанавливаем кнопку
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Создать заявку';
+          }
+        }
+
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Создать заявку';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Показываем главный экран выбора при загрузке
+        const selectionBlock = document.getElementById('selectionBlock');
+        if (selectionBlock) {
+          selectionBlock.classList.remove('hidden');
+          currentScreen = 'selectionBlock';
+        }
+
+        const input = document.querySelector('.contact-input');
+
+        input.addEventListener('input', function (e) {
+          let value = e.target.value;
+
+          // Убираем всё, кроме цифр и +
+          value = value.replace(/[^\d+]/g, '');
+
+          // Определяем тип: телефон или карта
+          let isPhone = false;
+          if (value.startsWith('+7')) {
+            isPhone = true;
+            value = value.replace('+7', '7'); // временно заменяем для обработки
+          } else if (value.startsWith('8')) {
+            isPhone = true;
+            value = value.replace(/^8/, '7'); // приводим к 7...
+          } else if (value.startsWith('7') && value.length <= 11) {
+            isPhone = true;
+          }
+
+          // Форматируем
+          if (isPhone && value.length <= 11) {
+            // Формат: +7 (999) 999-99-99
+            value = value.slice(0, 11); // не больше 11 цифр
+            let formatted = '+7';
+            if (value.length > 1) formatted += ' (' + value.slice(1, 4);
+            if (value.length > 4) formatted += ') ' + value.slice(4, 7);
+            if (value.length > 7) formatted += '-' + value.slice(7, 9);
+            if (value.length > 9) formatted += '-' + value.slice(9, 11);
+            e.target.value = formatted;
+          } else {
+            // Формат карты: XXXX XXXX XXXX XXXX
+            value = value.replace(/\D/g, '').slice(0, 16); // только цифры, макс 16
+            e.target.value = value.replace(/(\d{4})/g, '$1 ').trim();
+          }
+        });
+
+        // Дополнительно: очистка при фокусе (опционально)
+        input.addEventListener('focus', function () {
+          // Можно сохранить "сырое" значение и показать его без форматирования при фокусе
+          // Но для простоты оставим как есть
+        });
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+</body>
+
+</html>
