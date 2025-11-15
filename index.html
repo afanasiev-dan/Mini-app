@@ -909,6 +909,11 @@
           alert('Заявка создана!');
           // Clear the form before navigating back
           clearFormFields(currentScreen);
+          // Восстанавливаем кнопку перед навигацией
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Создать заявку';
+          }
           navigateTo('back');
         } else {
           const errorText = await response.text();
