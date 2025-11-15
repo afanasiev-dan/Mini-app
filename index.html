@@ -188,7 +188,7 @@
       <div class="card" style="max-width: 400px;">
         <div class="card-body">
           <h5 class="card-title text-center mb-4">Создание заявки на покупку</h5>
-          <select class="form-select mb-3 bank-select">
+          <select class="form-select mb-3 currency-select">
             <option selected value="">Выберите валюту</option>
             <option value="USDT">USDT</option>
             <option value="USDC">USDC</option>
@@ -215,7 +215,7 @@
               <input type="number" class="form-control sum-input" placeholder="5000">
             </div>
             <div class="col-auto" style="max-width: 96px">
-              <select class="form-select currency-select">
+              <select class="form-select amount-currency-select">
                 <option value="RUB" selected>₽</option>
                 <option value="USD">$</option>
               </select>
@@ -224,7 +224,7 @@
 
           <div>
             <label class="form-label">Имя отправителя</label>
-            <input type="text" class="form-control" placeholder="Вася Криптовалютов" />
+            <input type="text" class="form-control sender-name-input" placeholder="Вася Криптовалютов" />
           </div>
           <button class="btn btn-primary w-100 mt-3" onclick="submitForm('buy')">Создать заявку</button>
           <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
@@ -238,7 +238,7 @@
         <div class="card-body">
           <h5 class="card-title text-center mb-4">Создание заявки на продажу</h5>
 
-          <select class="form-select mb-3 bank-select">
+          <select class="form-select mb-3 currency-select">
             <option selected value="">Выберите валюту</option>
             <option value="USDT">USDT</option>
             <option value="USDC">USDC</option>
@@ -259,7 +259,7 @@
               <input type="number" class="form-control sum-input" placeholder="5000">
             </div>
             <div class="col-auto" style="max-width: 96px">
-              <select class="form-select currency-select">
+              <select class="form-select amount-currency-select">
                 <option value="RUB" selected>₽</option>
                 <option value="USD">$</option>
               </select>
@@ -277,7 +277,7 @@
           </div>
           <div>
             <label class="form-label">ФИО получателя</label>
-            <input type="text" class="form-control" placeholder="Вася Криптовалютов">
+            <input type="text" class="form-control recipient-name-input" placeholder="Вася Криптовалютов">
           </div>
           <button class="btn btn-primary w-100 mt-3" onclick="submitForm('sell')">Создать заявку</button>
           <button class="btn btn-outline-secondary w-100 mt-2" onclick="navigateTo('back')">← Назад</button>
@@ -779,15 +779,18 @@
       try {
         // Сбор данных с формы
         const screen = document.getElementById(currentScreen);
-        const currencySelect = screen.querySelectorAll('.bank-select')[0];
-        const bankSelect = screen.querySelectorAll('.bank-select')[1];
-        const inputs = screen.querySelectorAll('input');
-        const currencyPaymentTypeSelect = screen.querySelector('.currency-select');
+        const currencySelect = screen.querySelector('.currency-select');
+        const bankSelect = screen.querySelector('.bank-select');
+        const currencyPaymentTypeSelect = screen.querySelector('.amount-currency-select');
         const amountCurrency = currencyPaymentTypeSelect?.value || 'RUB';
 
         // Извлекаем значения из селектов (значения, а не индексы)
-        const currencyValue = currencySelect.value || 'USDT';
-        const bankValue = bankSelect.value || 'Т-Банк';
+        const currencyValue = currencySelect?.value || 'USDT';
+        const bankValue = bankSelect?.value || 'Т-Банк';
+
+        // Получаем значения из полей ввода по их классам
+        const sumInput = screen.querySelector('.sum-input');
+        const amount = parseFloat(sumInput?.value);
 
         // Валидация данных
         if (!currencyValue) {
@@ -810,7 +813,6 @@
           return;
         }
 
-        const amount = parseFloat(inputs[1]?.value);
         if (isNaN(amount) || amount <= 0) {
           showError("Пожалуйста, введите корректную сумму");
           // Восстанавливаем кнопку
@@ -823,17 +825,6 @@
 
         let formData;
         if (type === 'buy') {
-          const contactInfo = inputs[1]?.value || '';
-          if (!contactInfo.trim()) {
-            showError("Пожалуйста, укажите контактную информацию");
-            // Восстанавливаем кнопку
-            if (submitButton) {
-              submitButton.disabled = false;
-              submitButton.textContent = 'Создать заявку';
-            }
-            return;
-          }
-
           const uidValue = screen.querySelector('.uid-input').value;
           if (!uidValue.trim()) {
             showError("Пожалуйста, укажите UID");
@@ -844,6 +835,18 @@
             }
             return;
           }
+
+          const contactInfo = screen.querySelector('.sender-name-input')?.value || '';
+          if (!contactInfo.trim()) {
+            showError("Пожалуйста, укажите контактную информацию");
+            // Восстанавливаем кнопку
+            if (submitButton) {
+              submitButton.disabled = false;
+              submitButton.textContent = 'Создать заявку';
+            }
+            return;
+          }
+
           formData = {
             userId: user.id,
             username: user.username,
@@ -855,7 +858,8 @@
             contactInfo: contactInfo
           };
         } else if (type === 'sell') {
-          const paymentUserData = inputs[1]?.value || '';
+          const contactInput = screen.querySelector('.contact-input');
+          const paymentUserData = contactInput?.value || '';
           if (!paymentUserData.trim()) {
             showError("Пожалуйста, укажите данные для оплаты");
             // Восстанавливаем кнопку
@@ -866,7 +870,7 @@
             return;
           }
 
-          const contactInfo = inputs[2]?.value || '';
+          const contactInfo = screen.querySelector('.recipient-name-input')?.value || '';
           if (!contactInfo.trim()) {
             showError("Пожалуйста, укажите контактную информацию");
             // Восстанавливаем кнопку
