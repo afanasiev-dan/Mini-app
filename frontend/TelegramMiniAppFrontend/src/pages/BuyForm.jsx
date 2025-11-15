@@ -11,6 +11,21 @@ export default function BuyForm() {
       return;
     }
 
+    // Данные, которые будут отправлены
+    const orderData = {
+      currency: form.currency,
+      bank: form.bank,
+      bybitUid: form.uid,
+      amount: parseFloat(form.amount),
+      senderName: form.name,
+    };
+
+    // Выводим данные в консоль для отладки
+    console.log("Отправляемый запрос (предполагаемый):");
+    console.log("Тип заказа: buy");
+    console.log("Тело запроса:", orderData);
+    console.log("Адрес: /api/orders (предполагаемый)");
+
     alert("Заявка на покупку отправлена!");
     navigate("/");
   };

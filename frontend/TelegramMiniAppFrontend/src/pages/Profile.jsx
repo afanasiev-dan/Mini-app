@@ -10,9 +10,20 @@ export default function Profile() {
 
   useEffect(() => {
     if (user?.id) {
+      // Выводим информацию о запросе в консоль для отладки
+      console.log("Отправляемый запрос к getUserOrders:");
+      console.log("ID пользователя:", user.id);
+      console.log("Адрес: /api/users/{id}/orders (предполагаемый)");
+
       getUserOrders(user.id)
-        .then(setOrders)
-        .catch((err) => window.showError(err.message));
+        .then((fetchedOrders) => {
+          console.log("Полученные заказы:", fetchedOrders);
+          setOrders(fetchedOrders);
+        })
+        .catch((err) => {
+          console.error("Ошибка при получении заказов:", err);
+          window.showError(err.message);
+        });
     }
   }, [user]);
 

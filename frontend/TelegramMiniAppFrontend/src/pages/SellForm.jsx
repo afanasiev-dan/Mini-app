@@ -16,16 +16,25 @@ export default function SellForm() {
       return;
     }
 
+    // Данные, которые будут отправлены
+    const orderData = {
+      userId: user?.id || 0,
+      username: user?.username || "anonymous",
+      currency: form.currency,
+      bank: form.bank,
+      amount: parseFloat(form.amount),
+      paymentUserData: form.card,
+      contactInfo: form.name,
+    };
+
+    // Выводим данные в консоль для отладки
+    console.log("Отправляемый запрос к createOrder:");
+    console.log("Тип заказа: sell");
+    console.log("Тело запроса:", orderData);
+    console.log("Адрес: /api/orders (предполагаемый)");
+
     try {
-      await createOrder("sell", {
-        userId: user?.id || 0,
-        username: user?.username || "anonymous",
-        currency: form.currency,
-        bank: form.bank,
-        amount: parseFloat(form.amount),
-        paymentUserData: form.card,
-        contactInfo: form.name,
-      });
+      await createOrder("sell", orderData);
       alert("Заявка на продажу создана!");
       navigate("/");
     } catch (e) {
