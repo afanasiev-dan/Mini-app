@@ -1,0 +1,65 @@
+body.dark .card {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark .card-title {
+  color: var(--text-color);
+}
+
+body.dark .form-label {
+  color: var(--text-color);
+}
+
+body.dark .form-control {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark .form-control:focus {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25); /* Пример, можно адаптировать */
+}
+
+body.dark select.form-select {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark select.form-select:focus {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25);
+}
+
+body.dark .btn-primary {
+  background-color: var(--primary-btn-bg);
+  border-color: var(--primary-btn-border);
+  color: var(--primary-btn-text);
+}
+
+body.dark .btn-primary:hover {
+  background-color: var(--primary-btn-bg-hover);
+  border-color: var(--primary-btn-border-hover);
+}
+
+body.dark .btn-outline-secondary {
+  background-color: transparent;
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+
+body.dark .btn-outline-secondary:hover {
+  background-color: var(--border-color);
+  color: var(--bg-color);
+}
+
+body.dark .text-muted {
+  color: var(--muted-text-color) !important;
+}

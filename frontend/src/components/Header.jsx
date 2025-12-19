@@ -1,0 +1,38 @@
+export default function Header() {
+  return (
+    <div id="errorModal" class="modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Ошибка</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <textarea
+              id="errorText"
+              class="form-control"
+              rows="5"
+              readonly
+            ></textarea>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Закрыть
+            </button>
+            <button type="button" class="btn btn-primary" onclick="copyError()">
+              Копировать
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

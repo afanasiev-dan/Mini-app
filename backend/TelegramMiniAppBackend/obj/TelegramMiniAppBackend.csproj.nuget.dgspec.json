@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj": {}
+    "D:\\projects\\git\\Mini-app\\backend\\TelegramMiniAppBackend\\TelegramMiniAppBackend.csproj": {}
   },
   "projects": {
-    "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj": {
+    "D:\\projects\\git\\Mini-app\\backend\\TelegramMiniAppBackend\\TelegramMiniAppBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj",
+        "projectUniqueName": "D:\\projects\\git\\Mini-app\\backend\\TelegramMiniAppBackend\\TelegramMiniAppBackend.csproj",
         "projectName": "TelegramMiniAppBackend",
-        "projectPath": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/TelegramMiniAppBackend.csproj",
-        "packagesPath": "/home/daniil/.nuget/packages/",
-        "outputPath": "/home/daniil/projects/git/Mini-app/backend/TelegramMiniAppBackend/obj/",
+        "projectPath": "D:\\projects\\git\\Mini-app\\backend\\TelegramMiniAppBackend\\TelegramMiniAppBackend.csproj",
+        "packagesPath": "C:\\Users\\dan\\.nuget\\packages\\",
+        "outputPath": "D:\\projects\\git\\Mini-app\\backend\\TelegramMiniAppBackend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/home/daniil/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\dan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +45,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net8.0": {
@@ -68,20 +75,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.15, 8.0.15]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[8.0.15, 8.0.15]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.15, 8.0.15]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -90,7 +83,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
