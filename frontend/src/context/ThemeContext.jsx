@@ -45,8 +45,8 @@ export const ThemeProvider = ({ children }) => {
   const antdTokens = theme === 'dark' ? {
     token: {
       // Пример токенов для тёмной темы
-      colorPrimary: '#177ddc', // Основной цвет
-      colorBgLayout: '#1f1f1f', // Цвет фона Layout
+      colorPrimary: '#ff5009', // Основной цвет
+      colorBgLayout: '#0a0a0a', // Цвет фона Layout
       colorText: '#ffffff', // Основной цвет текста
       colorBgContainer: '#141414', // Цвет фона контейнеров (Card, Input и т.д.)
       // ... другие токены
@@ -55,7 +55,7 @@ export const ThemeProvider = ({ children }) => {
   } : {
     token: {
       // Пример токенов для светлой темы (можно оставить пустым, чтобы использовать стандартные)
-      colorPrimary: '#1890ff', // Стандартный синий AntD
+      colorPrimary: '#ff5009', // Стандартный синий AntD
       colorBgLayout: '#f0f2f5', // Стандартный фон Layout
       colorText: '#000000', // Стандартный цвет текста
       // ... другие токены

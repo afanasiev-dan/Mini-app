@@ -9,7 +9,7 @@ import App from './App.jsx'
 // import './bootstrap-theme-overrides.css'
 
 import './index.css' // Импортируем основные стили (где переменные и body)
-import { ThemeProvider } from './context/ThemeContext'; // Убедитесь, что путь верный
+import { ThemeProvider } from './context/ThemeContext'; // Убедитесь, что путь верный`
 
 // Если вы будете использовать глобальные стили AntD, импортируйте их ЗДЕСЬ
 // import 'antd/dist/reset.css'; // Старая версия (до v5.13.0)
